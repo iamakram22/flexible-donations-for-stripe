@@ -1,0 +1,91 @@
+.scd-donation-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.scd-amount-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.scd-amount-btn {
+    padding: 15px;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.scd-amount-btn:hover,
+.scd-amount-btn.active {
+    background: #0073aa;
+    color: #fff;
+    border-color: #0073aa;
+}
+
+.scd-custom-amount,
+.scd-email,
+.scd-payment-type,
+.scd-interval {
+    margin-bottom: 20px;
+}
+
+.scd-custom-amount label,
+.scd-email label,
+.scd-interval label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.scd-custom-amount input,
+.scd-email input,
+.scd-interval select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.scd-payment-type label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.scd-submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: #0073aa;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.scd-submit-btn:hover {
+    background: #005177;
+}
+
+.scd-submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.scd-error-message {
+    padding: 15px;
+    background: #f44336;
+    color: #fff;
+    border-radius: 5px;
+    margin-top: 15px;
+}
