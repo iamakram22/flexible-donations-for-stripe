@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Stripe Custom Donations
- * Plugin URI: https://yoursite.com
+ * Plugin URI: https://github.com/iamakram22/stripe-custom-donations
  * Description: Custom Stripe donation integration with recurring payments
  * Version: 1.0.0
  * Author: Mohd Akram

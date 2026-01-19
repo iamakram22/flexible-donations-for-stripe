@@ -27,7 +27,7 @@ class SCD_Donation_Handler
         $options = get_option('scd_stripe_settings');
         $predefined_amounts = isset($options['predefined_amounts']) ? explode(',', $options['predefined_amounts']) : array('500', '1000', '2000', '5000');
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
-        $intervals = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('monthly', 'quarterly', 'yearly');
+        $intervals = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('daily', 'weekly', 'monthly', 'quarterly', 'yearly');
 
         ob_start();
         ?>
@@ -73,6 +73,12 @@ class SCD_Donation_Handler
                 <div class="scd-interval" style="display: none;">
                     <label for="scd-interval"><?php _e('Frequency:', 'stripe-donations'); ?></label>
                     <select id="scd-interval" name="interval">
+                        <?php if (in_array('daily', $intervals)) : ?>
+                            <option value="daily"><?php _e('Daily', 'stripe-donations'); ?></option>
+                        <?php endif; ?>
+                        <?php if (in_array('weekly', $intervals)) : ?>
+                            <option value="weekly"><?php _e('Weekly', 'stripe-donations'); ?></option>
+                        <?php endif; ?>
                         <?php if (in_array('monthly', $intervals)) : ?>
                             <option value="monthly"><?php _e('Monthly', 'stripe-donations'); ?></option>
                         <?php endif; ?>
@@ -85,7 +91,8 @@ class SCD_Donation_Handler
                     </select>
                 </div>
 
-                <button type="submit" class="scd-submit-btn"><?php _e('Proceed to Payment', 'stripe-donations'); ?></button>
+                <button type="submit"
+                    class="scd-submit-btn"><?php _e($options['button_label'] ?? 'Proceed to Payment', 'stripe-donations'); ?></button>
                 <div class="scd-error-message" style="display: none;"></div>
             </form>
         </div>
@@ -105,7 +112,7 @@ class SCD_Donation_Handler
         $amount = isset($_POST['amount']) ? floatval($_POST['amount']) : 0;
         $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
         $payment_type = isset($_POST['payment_type']) ? sanitize_text_field($_POST['payment_type']) : 'one_time';
-        $interval = isset($_POST['interval']) ? sanitize_text_field($_POST['interval']) : '';
+        $interval = isset($_POST['interval']) ? sanitize_text_field($_POST['interval']) : 'monnthly';
 
         // Validate
         if ($amount < 10) {
@@ -133,16 +140,32 @@ class SCD_Donation_Handler
             $line_items = array();
 
             if ($payment_type === 'recurring') {
-                // Map interval to Stripe format
-                $stripe_interval = 'month';
-                $interval_count = 1;
+                // Map interval to Stripe format                
+                switch ($interval) {
+                    case 'daily':
+                        $stripe_interval = 'day';
+                        $interval_count = 1;
+                        break;
 
-                if ($interval === 'quarterly') {
-                    $stripe_interval = 'month';
-                    $interval_count = 3;
-                } elseif ($interval === 'yearly') {
-                    $stripe_interval = 'year';
-                    $interval_count = 1;
+                    case 'weekly':
+                        $stripe_interval = 'week';
+                        $interval_count = 1;
+                        break;
+
+                    case 'quarterly':
+                        $stripe_interval = 'month';
+                        $interval_count = 3;
+                        break;
+
+                    case 'yearly':
+                        $stripe_interval = 'year';
+                        $interval_count = 1;
+                        break;
+
+                    default: // monthly
+                        $stripe_interval = 'month';
+                        $interval_count = 1;
+                        break;
                 }
 
                 $line_items[] = array(
