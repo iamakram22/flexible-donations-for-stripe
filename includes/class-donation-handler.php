@@ -27,7 +27,7 @@ class SCD_Donation_Handler
         $options = get_option('scd_stripe_settings');
         $predefined_amounts = isset($options['predefined_amounts']) ? explode(',', $options['predefined_amounts']) : array('500', '1000', '2000', '5000');
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
-        $intervals = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('weekly', 'monthly', 'quarterly', 'yearly');
+        $intervals = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('daily', 'weekly', 'monthly', 'quarterly', 'yearly');
 
         ob_start();
         ?>
