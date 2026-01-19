@@ -1,3 +1,10 @@
+:root {
+    --scd-accent: #0073aa;
+    --scd-accent-hover: #005177;
+    --scd-border: #ddd;
+    --scd-error: #f44336;
+}
+
 .scd-donation-form {
     max-width: 600px;
     margin: 0 auto;
@@ -16,7 +23,7 @@
 .scd-amount-btn {
     padding: 15px;
     background: #fff;
-    border: 2px solid #ddd;
+    border: 2px solid var(--scd-border);
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
@@ -25,9 +32,9 @@
 
 .scd-amount-btn:hover,
 .scd-amount-btn.active {
-    background: #0073aa;
+    background: var(--scd-accent);
     color: #fff;
-    border-color: #0073aa;
+    border-color: var(--scd-accent);
 }
 
 .scd-custom-amount,
@@ -50,7 +57,7 @@
 .scd-interval select {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--scd-border);
     border-radius: 5px;
     font-size: 16px;
 }
@@ -63,7 +70,7 @@
 .scd-submit-btn {
     width: 100%;
     padding: 15px;
-    background: #0073aa;
+    background: var(--scd-accent);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -74,7 +81,7 @@
 }
 
 .scd-submit-btn:hover {
-    background: #005177;
+    background: var(--scd-accent-hover);
 }
 
 .scd-submit-btn:disabled {
@@ -84,7 +91,7 @@
 
 .scd-error-message {
     padding: 15px;
-    background: #f44336;
+    background: var(--scd-error);
     color: #fff;
     border-radius: 5px;
     margin-top: 15px;

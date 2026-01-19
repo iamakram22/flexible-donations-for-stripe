@@ -108,6 +108,14 @@ class SCD_Settings
             'stripe-donations-settings',
             'scd_donation_section'
         );
+
+        add_settings_field(
+            'button_label',
+            __('Donation Button Label', 'stripe-donations'),
+            array($this, 'button_label_callback'),
+            'stripe-donations-settings',
+            'scd_donation_section'
+        );
     }
 
     /**
@@ -143,6 +151,11 @@ class SCD_Settings
         // Sanitize recurring intervals (array)
         if (isset($input['recurring_intervals'])) {
             $sanitized['recurring_intervals'] = array_map('sanitize_text_field', $input['recurring_intervals']);
+        }
+        
+        // Sanitize button label
+        if (isset($input['button_label'])) {
+            $sanitized['button_label'] = sanitize_text_field($input['button_label']);
         }
 
         return $sanitized;
@@ -243,6 +256,8 @@ class SCD_Settings
         $selected = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('monthly', 'quarterly', 'yearly');
 
         $intervals = array(
+            'daily' => __('Daily', 'stripe-donations'),
+            'weekly' => __('Weekly', 'stripe-donations'),
             'monthly' => __('Monthly', 'stripe-donations'),
             'quarterly' => __('Quarterly (Every 3 months)', 'stripe-donations'),
             'yearly' => __('Yearly', 'stripe-donations')
@@ -252,5 +267,13 @@ class SCD_Settings
             $checked = in_array($key, $selected) ? 'checked' : '';
             echo '<label><input type="checkbox" name="' . $this->option_name . '[recurring_intervals][]" value="' . esc_attr($key) . '" ' . $checked . '> ' . esc_html($label) . '</label><br>';
         }
+    }
+    
+    public function button_label_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['button_label']) ? $options['button_label'] : 'Donate';
+        echo '<input type="text" name="' . $this->option_name . '[button_label]" value="' . esc_attr($value) . '" class="regular-text" />';
+        echo '<p class="description">' . __('It will be text of the button', 'stripe-donations') . '</p>';
     }
 }
