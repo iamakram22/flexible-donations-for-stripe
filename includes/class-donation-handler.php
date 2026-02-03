@@ -28,10 +28,39 @@ class SCD_Donation_Handler
         $predefined_amounts = isset($options['predefined_amounts']) ? explode(',', $options['predefined_amounts']) : array('500', '1000', '2000', '5000');
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
         $intervals = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('daily', 'weekly', 'monthly', 'quarterly', 'yearly');
+        $button_label = isset($options['button_label']) ? $options['button_label'] : __('Proceed to Payment', 'stripe-donations');
+
+        // Read query params
+        $session_id = isset($_GET['session_id']) ? sanitize_text_field($_GET['session_id']) : '';
+        $donation_status = isset($_GET['donation']) ? sanitize_text_field($_GET['donation']) : '';
+
+        // Build message state
+        $success_message = '';
+        $error_message = '';
+
+        if (!empty($session_id)) {
+            $success_message = __('Thank you! Your donation was successfully processed.', 'stripe-donations');
+        } elseif ($donation_status === 'cancelled') {
+            $error_message = __('Your donation was cancelled. You can try again below.', 'stripe-donations');
+        }
 
         ob_start();
         ?>
         <div class="scd-donation-form">
+            <?php if (!empty($success_message)) : ?>
+                <div class="scd-success-message">
+                    <?php echo esc_html($success_message); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($error_message)) : ?>
+                <div class="scd-error-message" style="<?php echo empty($error_message) ? 'display:none;' : ''; ?>">
+                    <?php echo esc_html($error_message); ?>
+                </div>
+            <?php else : ?>
+                <div class="scd-error-message" style="display:none;"></div>
+            <?php endif; ?>
+
             <h3><?php _e('Make a Donation', 'stripe-donations'); ?></h3>
 
             <form id="scd-donation-form">
@@ -39,7 +68,7 @@ class SCD_Donation_Handler
                 <div class="scd-amount-buttons">
                     <?php foreach ($predefined_amounts as $amount) : ?>
                         <button type="button" class="scd-amount-btn" data-amount="<?php echo esc_attr(trim($amount)); ?>">
-                            <?php echo esc_html(strtoupper($currency) . ' ' . number_format(trim($amount))); ?>
+                            <?php echo esc_html('$' . number_format(trim($amount))); ?>
                         </button>
                     <?php endforeach; ?>
                 </div>
@@ -91,9 +120,9 @@ class SCD_Donation_Handler
                     </select>
                 </div>
 
-                <button type="submit"
-                    class="scd-submit-btn"><?php _e($options['button_label'] ?? 'Proceed to Payment', 'stripe-donations'); ?></button>
-                <div class="scd-error-message" style="display: none;"></div>
+                <button type="submit" class="scd-submit-btn">
+                    <?php echo esc_html($button_label); ?>
+                </button>
             </form>
         </div>
         <?php
@@ -172,7 +201,7 @@ class SCD_Donation_Handler
                     'price_data' => array(
                         'currency' => $currency,
                         'product_data' => array(
-                            'name' => 'Recurring Donation',
+                            'name' => 'Donation',
                         ),
                         'unit_amount' => $amount * 100, // Convert to cents
                         'recurring' => array(
@@ -189,7 +218,7 @@ class SCD_Donation_Handler
                     'price_data' => array(
                         'currency' => $currency,
                         'product_data' => array(
-                            'name' => 'One-time Donation',
+                            'name' => 'Donation',
                         ),
                         'unit_amount' => $amount * 100,
                     ),
@@ -200,18 +229,42 @@ class SCD_Donation_Handler
             }
 
             // Create Checkout Session
-            $session = \Stripe\Checkout\Session::create(array(
+            // Prepare session parameters
+            $session_params = array(
                 'payment_method_types' => array('card'),
                 'line_items' => $line_items,
                 'mode' => $mode,
                 'customer_email' => $email,
-                'success_url' => home_url('/donation-success?session_id={CHECKOUT_SESSION_ID}'),
-                'cancel_url' => home_url('/donation-cancelled'),
+                'success_url' => home_url('/support-us?session_id={CHECKOUT_SESSION_ID}'),
+                'cancel_url' => home_url('/support-us?donation=cancelled'),
                 'metadata' => array(
                     'payment_type' => $payment_type,
                     'interval' => $interval,
+                    'business_name' => 'Center for Resource Solutions',
+                    'website' => 'https://resource-solutions.org/support-us/',
                 ),
-            ));
+            );
+
+            // Add payment intent data for one-time payments
+            if ($mode === 'payment') {
+                $session_params['payment_intent_data'] = array(
+                    'description' => 'Donation',
+                    'statement_descriptor' => 'CRS Donation',
+                );
+            }
+
+            // Add subscription data for recurring payments
+            if ($mode === 'subscription') {
+                $session_params['subscription_data'] = array(
+                    'description' => 'Donation',
+                    'metadata' => array(
+                        'business_name' => 'Center for Resource Solutions',
+                    ),
+                );
+            }
+
+            // Create Checkout Session
+            $session = \Stripe\Checkout\Session::create($session_params);
 
             // Save donation record
             global $wpdb;

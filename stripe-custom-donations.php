@@ -3,7 +3,7 @@
  * Plugin Name: Stripe Custom Donations
  * Plugin URI: https://github.com/iamakram22/stripe-custom-donations
  * Description: Custom Stripe donation integration with recurring payments
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: Mohd Akram
  * Author URI: https://github.com/iamakram22
  * Text Domain: stripe-donations
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SCD_VERSION', '1.0.0');
+define('SCD_VERSION', '2.0.0');
 define('SCD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SCD_PLUGIN_URL', plugin_dir_url(__FILE__));
 

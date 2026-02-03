@@ -7,7 +7,7 @@
 
 .scd-donation-form {
     max-width: 600px;
-    margin: 0 auto;
+    /*     margin: 0 auto; */
     padding: 30px;
     background: #f9f9f9;
     border-radius: 8px;
@@ -87,6 +87,14 @@
 .scd-submit-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
+}
+
+.scd-success-message {
+    padding: 15px;
+    background: #4caf50;
+    color: #fff;
+    border-radius: 5px;
+    margin-bottom: 15px;
 }
 
 .scd-error-message {

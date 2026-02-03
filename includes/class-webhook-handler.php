@@ -137,17 +137,25 @@ class SCD_Webhook_Handler
     private function send_confirmation_email($session)
     {
         $to = $session->customer_email;
-        $admin_email = get_option('admin_email');
-        $subject = __('Thank you for your donation', 'stripe-donations');
-        $headers = array(
-            'Cc: ' . $admin_email
-        );
+        $subject = __('Thank you for your contribution', 'stripe-donations');
+
+        $amount_formatted = '$' . number_format($session->amount_total / 100, 2);
+        $phone = '<a href="tel:+14155612100">+1-415-561-2100</a>';
+        $email = '<a href="mailto:info@resource-solutions.org">info@resource-solutions.org</a>';
+
         $message = sprintf(
-            __('Your donation of %s %s has been received. Thank you for your support!', 'stripe-donations'),
-            strtoupper($session->currency),
-            number_format($session->amount_total / 100, 2)
+            __('Thank you for your contribution of %s to the ongoing work of Center for Resource Solutions (CRS). We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please call us at %s or email %s.', 'stripe-donations'),
+            $amount_formatted,
+            $phone,
+            $email
         );
 
-        wp_mail($to, $subject, $message);
+        // Set custom headers for sender name and email
+        $headers = array(
+            'From: CRS Accounts Receivable <info@resource-solutions.org>',
+            'Content-Type: text/html; charset=UTF-8'
+        );
+
+        wp_mail($to, $subject, $message, $headers);
     }
 }

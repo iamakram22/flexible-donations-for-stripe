@@ -152,7 +152,7 @@ class SCD_Settings
         if (isset($input['recurring_intervals'])) {
             $sanitized['recurring_intervals'] = array_map('sanitize_text_field', $input['recurring_intervals']);
         }
-        
+
         // Sanitize button label
         if (isset($input['button_label'])) {
             $sanitized['button_label'] = sanitize_text_field($input['button_label']);
@@ -268,7 +268,7 @@ class SCD_Settings
             echo '<label><input type="checkbox" name="' . $this->option_name . '[recurring_intervals][]" value="' . esc_attr($key) . '" ' . $checked . '> ' . esc_html($label) . '</label><br>';
         }
     }
-    
+
     public function button_label_callback()
     {
         $options = get_option($this->option_name);
