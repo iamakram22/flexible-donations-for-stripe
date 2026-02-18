@@ -116,6 +116,46 @@ class SCD_Settings
             'stripe-donations-settings',
             'scd_donation_section'
         );
+
+        // Section: Email Configuration
+        add_settings_section(
+            'scd_email_section',
+            __('Email Configuration', 'stripe-donations'),
+            array($this, 'email_section_callback'),
+            'stripe-donations-settings'
+        );
+
+        add_settings_field(
+            'email_from_name',
+            __('Email From Name', 'stripe-donations'),
+            array($this, 'email_from_name_callback'),
+            'stripe-donations-settings',
+            'scd_email_section'
+        );
+
+        add_settings_field(
+            'email_from_address',
+            __('Email From Address', 'stripe-donations'),
+            array($this, 'email_from_address_callback'),
+            'stripe-donations-settings',
+            'scd_email_section'
+        );
+
+        add_settings_field(
+            'email_subject',
+            __('Email Subject', 'stripe-donations'),
+            array($this, 'email_subject_callback'),
+            'stripe-donations-settings',
+            'scd_email_section'
+        );
+
+        add_settings_field(
+            'email_template',
+            __('Email Template', 'stripe-donations'),
+            array($this, 'email_template_callback'),
+            'stripe-donations-settings',
+            'scd_email_section'
+        );
     }
 
     /**
@@ -156,6 +196,23 @@ class SCD_Settings
         // Sanitize button label
         if (isset($input['button_label'])) {
             $sanitized['button_label'] = sanitize_text_field($input['button_label']);
+        }
+
+        // Sanitize email settings
+        if (isset($input['email_from_name'])) {
+            $sanitized['email_from_name'] = sanitize_text_field($input['email_from_name']);
+        }
+
+        if (isset($input['email_from_address'])) {
+            $sanitized['email_from_address'] = sanitize_email($input['email_from_address']);
+        }
+
+        if (isset($input['email_subject'])) {
+            $sanitized['email_subject'] = sanitize_text_field($input['email_subject']);
+        }
+
+        if (isset($input['email_template'])) {
+            $sanitized['email_template'] = wp_kses_post($input['email_template']);
         }
 
         return $sanitized;
@@ -275,5 +332,54 @@ class SCD_Settings
         $value = isset($options['button_label']) ? $options['button_label'] : 'Donate';
         echo '<input type="text" name="' . $this->option_name . '[button_label]" value="' . esc_attr($value) . '" class="regular-text" />';
         echo '<p class="description">' . __('It will be text of the button', 'stripe-donations') . '</p>';
+    }
+
+    // Email section callback
+    public function email_section_callback()
+    {
+        echo '<p>' . __('Configure email confirmation settings. Use placeholders for dynamic content.', 'stripe-donations') . '</p>';
+        echo '<p><strong>' . __('Available Placeholders:', 'stripe-donations') . '</strong></p>';
+        echo '<ul style="list-style: disc; margin-left: 20px;">';
+        echo '<li><code>{amount}</code> - ' . __('Donation amount with currency symbol', 'stripe-donations') . '</li>';
+        echo '<li><code>{email}</code> - ' . __('Donor email address', 'stripe-donations') . '</li>';
+        echo '<li><code>{payment_type}</code> - ' . __('One-time or Recurring', 'stripe-donations') . '</li>';
+        echo '<li><code>{interval}</code> - ' . __('Billing interval (for recurring donations)', 'stripe-donations') . '</li>';
+        echo '<li><code>{date}</code> - ' . __('Current date', 'stripe-donations') . '</li>';
+        echo '</ul>';
+    }
+
+    public function email_from_name_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['email_from_name']) ? $options['email_from_name'] : 'CRS Accounts Receivable';
+        echo '<input type="text" name="' . $this->option_name . '[email_from_name]" value="' . esc_attr($value) . '" class="regular-text" />';
+        echo '<p class="description">' . __('Name that appears in donor\'s inbox', 'stripe-donations') . '</p>';
+    }
+
+    public function email_from_address_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['email_from_address']) ? $options['email_from_address'] : 'info@resource-solutions.org';
+        echo '<input type="email" name="' . $this->option_name . '[email_from_address]" value="' . esc_attr($value) . '" class="regular-text" />';
+        echo '<p class="description">' . __('Email address that appears as sender', 'stripe-donations') . '</p>';
+    }
+
+    public function email_subject_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['email_subject']) ? $options['email_subject'] : 'Thank you for your contribution';
+        echo '<input type="text" name="' . $this->option_name . '[email_subject]" value="' . esc_attr($value) . '" class="large-text" />';
+        echo '<p class="description">' . __('Email subject line (placeholders supported)', 'stripe-donations') . '</p>';
+    }
+
+    public function email_template_callback()
+    {
+        $options = get_option($this->option_name);
+        $default_template = "Thank you for your contribution of {amount} to the ongoing work of Center for Resource Solutions (CRS). We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please call us at +1-415-561-2100 or email info@resource-solutions.org.";
+
+        $value = isset($options['email_template']) ? $options['email_template'] : $default_template;
+
+        echo '<textarea name="' . $this->option_name . '[email_template]" rows="8" class="large-text code">' . esc_textarea($value) . '</textarea>';
+        echo '<p class="description">' . __('Email message body. Use placeholders like {amount}, {email}, {payment_type}, {interval}, {date}', 'stripe-donations') . '</p>';
     }
 }

@@ -132,30 +132,58 @@ class SCD_Webhook_Handler
     }
 
     /**
-     * Send confirmation email to customer
+     * Send confirmation email with dynamic template
      */
     private function send_confirmation_email($session)
     {
-        $to = $session->customer_email;
-        $subject = __('Thank you for your contribution', 'stripe-donations');
+        try {
+            // Get email settings
+            $options = get_option('scd_stripe_settings');
 
-        $amount_formatted = '$' . number_format($session->amount_total / 100, 2);
-        $phone = '<a href="tel:+14155612100">+1-415-561-2100</a>';
-        $email = '<a href="mailto:info@resource-solutions.org">info@resource-solutions.org</a>';
+            // Email configuration
+            $from_name = isset($options['email_from_name']) ? $options['email_from_name'] : 'CRS Accounts Receivable';
+            $from_email = isset($options['email_from_address']) ? $options['email_from_address'] : 'info@resource-solutions.org';
+            $subject = isset($options['email_subject']) ? $options['email_subject'] : 'Thank you for your contribution';
+            $template = isset($options['email_template']) ? $options['email_template'] : '';
 
-        $message = sprintf(
-            __('Thank you for your contribution of %s to the ongoing work of Center for Resource Solutions (CRS). We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please call us at %s or email %s.', 'stripe-donations'),
-            $amount_formatted,
-            $phone,
-            $email
-        );
+            // Default template if empty
+            if (empty($template)) {
+                $template = "Thank you for your contribution of {amount} to the ongoing work of Center for Resource Solutions (CRS). We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please call us at +1-415-561-2100 or email info@resource-solutions.org.";
+            }
 
-        // Set custom headers for sender name and email
-        $headers = array(
-            'From: CRS Accounts Receivable <info@resource-solutions.org>',
-            'Content-Type: text/html; charset=UTF-8'
-        );
+            // Prepare dynamic data
+            $amount_formatted = '$' . number_format($session->amount_total / 100, 2);
+            $customer_email = $session->customer_email;
+            $payment_type = isset($session->metadata->payment_type) ? ucfirst($session->metadata->payment_type) : 'One-time';
+            $interval = isset($session->metadata->interval) ? ucfirst($session->metadata->interval) : 'N/A';
+            $current_date = date_i18n(get_option('date_format'));
 
-        wp_mail($to, $subject, $message, $headers);
+            // Replace placeholders
+            $placeholders = array(
+                '{amount}' => $amount_formatted,
+                '{email}' => $customer_email,
+                '{payment_type}' => str_replace('_', '-', $payment_type),
+                '{interval}' => $interval,
+                '{date}' => $current_date,
+            );
+
+            $message = str_replace(array_keys($placeholders), array_values($placeholders), $template);
+            $subject = str_replace(array_keys($placeholders), array_values($placeholders), $subject);
+
+            // Set custom headers
+            $headers = array(
+                'From: ' . $from_name . ' <' . $from_email . '>',
+                'Content-Type: text/html; charset=UTF-8'
+            );
+
+            // Convert line breaks to <br> for HTML email
+            $message = nl2br($message);
+
+            // Send email
+            wp_mail($customer_email, $subject, $message, $headers);
+        }
+        catch (\Exception $e) {
+            return new WP_REST_Response(array('error' => $e->getMessage()), 400);
+        }
     }
 }
