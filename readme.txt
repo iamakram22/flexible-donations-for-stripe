@@ -84,6 +84,11 @@ Set the **Donation Page Path** in Settings → Stripe Donations. This is the pat
 
 Cards through Stripe Checkout. Stripe handles the full payment experience.
 
+== Screenshots ==
+
+1. Donation form with predefined amount buttons, custom amount input, and one-time / recurring options
+2. Settings page with Stripe API configuration, sandbox test mode, donation and email settings
+
 == Privacy ==
 
 This plugin does not collect, store, or transmit any personal data on its own. Donation information (donor email address and amount) is sent to Stripe, the payment processor, when creating a checkout session. Data is stored in your site's database (`stripe_donations` table) for donation tracking purposes.
@@ -94,6 +99,7 @@ This plugin does not collect, store, or transmit any personal data on its own. D
 * Added Sandbox / Test mode with separate test keys and a live/test toggle
 * Added warning banner when test mode is active
 * Added donation page path setting for Stripe redirect URLs
+* Added configurable statement descriptor shown on donor bank statements
 * General cleanup for WordPress.org compliance
 
 = 3.0.0 =
