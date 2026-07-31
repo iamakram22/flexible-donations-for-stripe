@@ -177,6 +177,7 @@ class SCD_Donation_Handler
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
         $donation_page = isset($options['donation_page_url']) && !empty($options['donation_page_url']) ? $options['donation_page_url'] : '/support-us';
         $org_name = get_bloginfo('name');
+        $statement_descriptor = substr(preg_replace('/[^a-zA-Z0-9 ]/', '', !empty($options['statement_descriptor']) ? $options['statement_descriptor'] : $org_name), 0, 22);
 
         if (empty($secret_key)) {
             wp_send_json_error(array('message' => __('Stripe is not configured', 'stripe-custom-donations')));
@@ -270,7 +271,7 @@ class SCD_Donation_Handler
             if ($mode === 'payment') {
                 $session_params['payment_intent_data'] = array(
                     'description' => 'Donation',
-                    'statement_descriptor' => 'CRS Donation',
+                    'statement_descriptor' => $statement_descriptor,
                 );
             }
 
@@ -335,6 +336,7 @@ class SCD_Donation_Handler
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
         $donation_page = isset($options['donation_page_url']) && !empty($options['donation_page_url']) ? $options['donation_page_url'] : '/support-us';
         $org_name = get_bloginfo('name');
+        $statement_descriptor = substr(preg_replace('/[^a-zA-Z0-9 ]/', '', !empty($options['statement_descriptor']) ? $options['statement_descriptor'] : $org_name), 0, 22);
 
         if (empty($secret_key)) {
             return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Stripe is not configured', 'stripe-custom-donations'))), 400);
@@ -414,7 +416,7 @@ class SCD_Donation_Handler
             if ($mode === 'payment') {
                 $session_params['payment_intent_data'] = array(
                     'description' => 'Donation',
-                    'statement_descriptor' => 'CRS Donation',
+                    'statement_descriptor' => $statement_descriptor,
                 );
             }
 

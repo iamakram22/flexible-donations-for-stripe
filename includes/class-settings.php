@@ -173,6 +173,14 @@ class SCD_Settings
             'scd_donation_section'
         );
 
+        add_settings_field(
+            'statement_descriptor',
+            __('Statement Descriptor', 'stripe-custom-donations'),
+            array($this, 'statement_descriptor_callback'),
+            'stripe-custom-donations-settings',
+            'scd_donation_section'
+        );
+
         // Section: Email Configuration
         add_settings_section(
             'scd_email_section',
@@ -277,6 +285,10 @@ class SCD_Settings
 
         if (isset($input['donation_page_url'])) {
             $sanitized['donation_page_url'] = sanitize_text_field($input['donation_page_url']);
+        }
+
+        if (isset($input['statement_descriptor'])) {
+            $sanitized['statement_descriptor'] = sanitize_text_field($input['statement_descriptor']);
         }
 
         // Sanitize email settings
@@ -489,6 +501,14 @@ class SCD_Settings
         $value = isset($options['donation_page_url']) ? $options['donation_page_url'] : '/support-us';
         echo '<input type="text" name="' . $this->option_name . '[donation_page_url]" value="' . esc_attr($value) . '" class="regular-text" />';
         echo '<p class="description">' . __('Path of the page containing the donation form (used for Stripe redirects), e.g. /support-us', 'stripe-custom-donations') . '</p>';
+    }
+
+    public function statement_descriptor_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['statement_descriptor']) ? $options['statement_descriptor'] : '';
+        echo '<input type="text" name="' . $this->option_name . '[statement_descriptor]" value="' . esc_attr($value) . '" class="regular-text" maxlength="22" />';
+        echo '<p class="description">' . __('Shown on the donor\'s bank statement. Max 22 characters, letters/numbers/spaces only. Leave empty to use your site title.', 'stripe-custom-donations') . '</p>';
     }
 
     // Email section callback
