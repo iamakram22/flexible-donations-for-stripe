@@ -141,14 +141,14 @@ class SCD_Webhook_Handler
             $options = get_option('scd_stripe_settings');
 
             // Email configuration
-            $from_name = isset($options['email_from_name']) ? $options['email_from_name'] : 'CRS Accounts Receivable';
-            $from_email = isset($options['email_from_address']) ? $options['email_from_address'] : 'info@resource-solutions.org';
+            $from_name = isset($options['email_from_name']) ? $options['email_from_name'] : get_bloginfo('name');
+            $from_email = isset($options['email_from_address']) ? $options['email_from_address'] : get_bloginfo('admin_email');
             $subject = isset($options['email_subject']) ? $options['email_subject'] : 'Thank you for your contribution';
             $template = isset($options['email_template']) ? $options['email_template'] : '';
 
             // Default template if empty
             if (empty($template)) {
-                $template = "Thank you for your contribution of {amount} to the ongoing work of Center for Resource Solutions (CRS). We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please call us at +1-415-561-2100 or email info@resource-solutions.org.";
+                $template = "Thank you for your contribution of {amount}. We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please reply to this email.";
             }
 
             // Prepare dynamic data

@@ -1,0 +1,34 @@
+# Builds an SVN-ready WordPress.org release package:
+#   release/svn/trunk/<plugin>/   - plugin files + vendor (SVN trunk)
+#   release/svn/tags/<version>/   - copy of trunk (SVN tag)
+#   release/svn/assets/           - icon, banner, screenshots
+#   release/stripe-custom-donations-<version>.zip - WP.org upload (trunk only)
+# Output goes to release/ (gitignored). Run from the plugin root.
+$ErrorActionPreference = 'Stop'
+
+$root = $PSScriptRoot
+$plugin = Split-Path -Leaf $root
+$version = Select-String -Path "$root\stripe-custom-donations.php" -Pattern "Version:\s*(\S+)" | ForEach-Object { $_.Matches[0].Groups[1].Value }
+$releaseDir = Join-Path $root 'release'
+$svnTrunk = Join-Path $releaseDir 'svn\trunk'
+$svnTag = Join-Path $releaseDir "svn\tags\$version"
+$svnAssets = Join-Path $releaseDir 'svn\assets'
+
+if (Test-Path $releaseDir) { Remove-Item -Recurse -Force $releaseDir }
+
+function Copy-Package($dest) {
+    $target = Join-Path $dest $plugin
+    New-Item -ItemType Directory -Force -Path $target | Out-Null
+    Copy-Item -Recurse -Force "$root\stripe-custom-donations.php", "$root\includes", "$root\assets\css", "$root\assets\js", "$root\index.php", "$root\readme.txt", "$root\changelog.txt", "$root\LICENSE", "$root\vendor" -Destination $target
+}
+
+Copy-Package $svnTrunk
+Copy-Package $svnTag
+Copy-Item -Recurse -Force "$root\assets\banner-*.png", "$root\assets\icon-*.png", "$root\assets\screenshot-*.png" -Destination $svnAssets
+
+$zip = Join-Path $releaseDir "stripe-custom-donations-$version.zip"
+Compress-Archive -Path "$svnTrunk\*" -DestinationPath $zip -Force
+
+$sizeMB = [math]::Round((Get-Item $zip).Length / 1MB, 2)
+Write-Host "Package: $zip ($sizeMB MB)  Tag: $version"
+if ($sizeMB -gt 9.5) { Write-Warning "ZIP is ${sizeMB}MB - WordPress.org limit is 10MB" }

@@ -31,4 +31,6 @@ tmp/
 
 *.zip
 
+release/
+
 config/local.php

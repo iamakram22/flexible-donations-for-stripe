@@ -25,10 +25,10 @@ class SCD_Settings
     public function add_settings_page()
     {
         add_options_page(
-            __('Stripe Donations Settings', 'stripe-donations'),
-            __('Stripe Donations', 'stripe-donations'),
+            __('Stripe Donations Settings', 'stripe-custom-donations'),
+            __('Stripe Donations', 'stripe-custom-donations'),
             'manage_options',
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             array($this, 'render_settings_page')
         );
     }
@@ -48,160 +48,168 @@ class SCD_Settings
         // Section: Stripe API Keys
         add_settings_section(
             'scd_api_section',
-            __('Stripe API Configuration', 'stripe-donations'),
+            __('Stripe API Configuration', 'stripe-custom-donations'),
             array($this, 'api_section_callback'),
-            'stripe-donations-settings'
+            'stripe-custom-donations-settings'
         );
 
         add_settings_field(
             'stripe_secret_key',
-            __('Secret Key', 'stripe-donations'),
+            __('Secret Key', 'stripe-custom-donations'),
             array($this, 'secret_key_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_api_section'
         );
 
         add_settings_field(
             'stripe_publishable_key',
-            __('Publishable Key', 'stripe-donations'),
+            __('Publishable Key', 'stripe-custom-donations'),
             array($this, 'publishable_key_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_api_section'
         );
 
         add_settings_field(
             'stripe_webhook_secret',
-            __('Webhook Secret', 'stripe-donations'),
+            __('Webhook Secret', 'stripe-custom-donations'),
             array($this, 'webhook_secret_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_api_section'
         );
 
         // Section: Sandbox / Test Mode
         add_settings_section(
             'scd_test_section',
-            __('Sandbox / Test Mode', 'stripe-donations'),
+            __('Sandbox / Test Mode', 'stripe-custom-donations'),
             array($this, 'test_section_callback'),
-            'stripe-donations-settings'
+            'stripe-custom-donations-settings'
         );
 
         add_settings_field(
             'stripe_mode',
-            __('Mode', 'stripe-donations'),
+            __('Mode', 'stripe-custom-donations'),
             array($this, 'stripe_mode_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_test_section'
         );
 
         add_settings_field(
             'stripe_test_secret_key',
-            __('Test Secret Key', 'stripe-donations'),
+            __('Test Secret Key', 'stripe-custom-donations'),
             array($this, 'test_secret_key_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_test_section'
         );
 
         add_settings_field(
             'stripe_test_publishable_key',
-            __('Test Publishable Key', 'stripe-donations'),
+            __('Test Publishable Key', 'stripe-custom-donations'),
             array($this, 'test_publishable_key_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_test_section'
         );
 
         add_settings_field(
             'stripe_test_webhook_secret',
-            __('Test Webhook Secret', 'stripe-donations'),
+            __('Test Webhook Secret', 'stripe-custom-donations'),
             array($this, 'test_webhook_secret_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_test_section'
         );
 
         // Section: Donation Configuration
         add_settings_section(
             'scd_donation_section',
-            __('Donation Configuration', 'stripe-donations'),
+            __('Donation Configuration', 'stripe-custom-donations'),
             array($this, 'donation_section_callback'),
-            'stripe-donations-settings'
+            'stripe-custom-donations-settings'
         );
 
         add_settings_field(
             'predefined_amounts',
-            __('Predefined Amounts', 'stripe-donations'),
+            __('Predefined Amounts', 'stripe-custom-donations'),
             array($this, 'predefined_amounts_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_donation_section'
         );
 
         add_settings_field(
             'currency',
-            __('Currency', 'stripe-donations'),
+            __('Currency', 'stripe-custom-donations'),
             array($this, 'currency_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_donation_section'
         );
 
         add_settings_field(
             'recurring_intervals',
-            __('Recurring Intervals', 'stripe-donations'),
+            __('Recurring Intervals', 'stripe-custom-donations'),
             array($this, 'recurring_intervals_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_donation_section'
         );
 
         add_settings_field(
             'button_label',
-            __('Donation Button Label', 'stripe-donations'),
+            __('Donation Button Label', 'stripe-custom-donations'),
             array($this, 'button_label_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_donation_section'
         );
 
         add_settings_field(
             'submission_method',
-            __('Submission Method', 'stripe-donations'),
+            __('Submission Method', 'stripe-custom-donations'),
             array($this, 'submission_method_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
+            'scd_donation_section'
+        );
+
+        add_settings_field(
+            'donation_page_url',
+            __('Donation Page Path', 'stripe-custom-donations'),
+            array($this, 'donation_page_url_callback'),
+            'stripe-custom-donations-settings',
             'scd_donation_section'
         );
 
         // Section: Email Configuration
         add_settings_section(
             'scd_email_section',
-            __('Email Configuration', 'stripe-donations'),
+            __('Email Configuration', 'stripe-custom-donations'),
             array($this, 'email_section_callback'),
-            'stripe-donations-settings'
+            'stripe-custom-donations-settings'
         );
 
         add_settings_field(
             'email_from_name',
-            __('Email From Name', 'stripe-donations'),
+            __('Email From Name', 'stripe-custom-donations'),
             array($this, 'email_from_name_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_email_section'
         );
 
         add_settings_field(
             'email_from_address',
-            __('Email From Address', 'stripe-donations'),
+            __('Email From Address', 'stripe-custom-donations'),
             array($this, 'email_from_address_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_email_section'
         );
 
         add_settings_field(
             'email_subject',
-            __('Email Subject', 'stripe-donations'),
+            __('Email Subject', 'stripe-custom-donations'),
             array($this, 'email_subject_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_email_section'
         );
 
         add_settings_field(
             'email_template',
-            __('Email Template', 'stripe-donations'),
+            __('Email Template', 'stripe-custom-donations'),
             array($this, 'email_template_callback'),
-            'stripe-donations-settings',
+            'stripe-custom-donations-settings',
             'scd_email_section'
         );
     }
@@ -267,6 +275,10 @@ class SCD_Settings
             $sanitized['submission_method'] = in_array($input['submission_method'], array('ajax', 'rest')) ? $input['submission_method'] : 'ajax';
         }
 
+        if (isset($input['donation_page_url'])) {
+            $sanitized['donation_page_url'] = sanitize_text_field($input['donation_page_url']);
+        }
+
         // Sanitize email settings
         if (isset($input['email_from_name'])) {
             $sanitized['email_from_name'] = sanitize_text_field($input['email_from_name']);
@@ -298,7 +310,7 @@ class SCD_Settings
 
         // Show success message
         if (isset($_GET['settings-updated'])) {
-            add_settings_error('scd_messages', 'scd_message', __('Settings Saved', 'stripe-donations'), 'updated');
+            add_settings_error('scd_messages', 'scd_message', __('Settings Saved', 'stripe-custom-donations'), 'updated');
         }
 
         settings_errors('scd_messages');
@@ -310,25 +322,25 @@ class SCD_Settings
             if (isset($scd_options['stripe_mode']) && $scd_options['stripe_mode'] === 'test') :
                 ?>
                 <div class="notice notice-warning">
-                    <p><strong><?php _e('WARNING: Test mode is ACTIVE.', 'stripe-donations'); ?></strong>
-                    <?php _e('Donations will NOT charge real cards. Switch back to Live mode when ready to accept real payments.', 'stripe-donations'); ?></p>
+                    <p><strong><?php _e('WARNING: Test mode is ACTIVE.', 'stripe-custom-donations'); ?></strong>
+                    <?php _e('Donations will NOT charge real cards. Switch back to Live mode when ready to accept real payments.', 'stripe-custom-donations'); ?></p>
                 </div>
             <?php endif; ?>
             <form action="options.php" method="post">
                 <?php
                 settings_fields($this->option_group);
-                do_settings_sections('stripe-donations-settings');
-                submit_button(__('Save Settings', 'stripe-donations'));
+                do_settings_sections('stripe-custom-donations-settings');
+                submit_button(__('Save Settings', 'stripe-custom-donations'));
                 ?>
             </form>
 
             <hr>
-            <h2><?php _e('Shortcode Usage', 'stripe-donations'); ?></h2>
+            <h2><?php _e('Shortcode Usage', 'stripe-custom-donations'); ?></h2>
             <p><code>[stripe_donation_form]</code></p>
 
-            <h2><?php _e('Webhook URL', 'stripe-donations'); ?></h2>
+            <h2><?php _e('Webhook URL', 'stripe-custom-donations'); ?></h2>
             <p><code><?php echo home_url('/wp-json/scd/v1/webhook'); ?></code></p>
-            <p><?php _e('Add this URL to your Stripe Dashboard > Webhooks', 'stripe-donations'); ?></p>
+            <p><?php _e('Add this URL to your Stripe Dashboard > Webhooks', 'stripe-custom-donations'); ?></p>
         </div>
         <?php
     }
@@ -336,17 +348,17 @@ class SCD_Settings
     // Section callbacks
     public function api_section_callback()
     {
-        echo '<p>' . __('Enter your Stripe API keys. Keys are stored securely in the database.', 'stripe-donations') . '</p>';
+        echo '<p>' . __('Enter your Stripe API keys. Keys are stored securely in the database.', 'stripe-custom-donations') . '</p>';
     }
 
     public function donation_section_callback()
     {
-        echo '<p>' . __('Configure donation amounts and recurring intervals.', 'stripe-donations') . '</p>';
+        echo '<p>' . __('Configure donation amounts and recurring intervals.', 'stripe-custom-donations') . '</p>';
     }
 
     public function test_section_callback()
     {
-        echo '<p>' . __('Store separate Stripe test keys and switch between Live and Test mode without touching your live keys.', 'stripe-donations') . '</p>';
+        echo '<p>' . __('Store separate Stripe test keys and switch between Live and Test mode without touching your live keys.', 'stripe-custom-donations') . '</p>';
     }
 
     // Field callbacks
@@ -355,7 +367,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['stripe_secret_key']) ? $options['stripe_secret_key'] : '';
         echo '<input type="password" name="' . $this->option_name . '[stripe_secret_key]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Starts with sk_test_ or sk_live_', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Starts with sk_test_ or sk_live_', 'stripe-custom-donations') . '</p>';
     }
 
     public function publishable_key_callback()
@@ -363,7 +375,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['stripe_publishable_key']) ? $options['stripe_publishable_key'] : '';
         echo '<input type="text" name="' . $this->option_name . '[stripe_publishable_key]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Starts with pk_test_ or pk_live_', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Starts with pk_test_ or pk_live_', 'stripe-custom-donations') . '</p>';
     }
 
     public function webhook_secret_callback()
@@ -371,7 +383,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['stripe_webhook_secret']) ? $options['stripe_webhook_secret'] : '';
         echo '<input type="password" name="' . $this->option_name . '[stripe_webhook_secret]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Starts with whsec_', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Starts with whsec_', 'stripe-custom-donations') . '</p>';
     }
 
     public function stripe_mode_callback()
@@ -381,12 +393,12 @@ class SCD_Settings
         ?>
         <label>
             <input type="radio" name="<?php echo $this->option_name; ?>[stripe_mode]" value="live" <?php checked($mode, 'live'); ?>>
-            <?php _e('Live mode (real payments)', 'stripe-donations'); ?>
+            <?php _e('Live mode (real payments)', 'stripe-custom-donations'); ?>
         </label>
         <br>
         <label>
             <input type="radio" name="<?php echo $this->option_name; ?>[stripe_mode]" value="test" <?php checked($mode, 'test'); ?>>
-            <?php _e('Test mode (sandbox testing)', 'stripe-donations'); ?>
+            <?php _e('Test mode (sandbox testing)', 'stripe-custom-donations'); ?>
         </label>
         <?php
     }
@@ -396,7 +408,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['stripe_test_secret_key']) ? $options['stripe_test_secret_key'] : '';
         echo '<input type="password" name="' . $this->option_name . '[stripe_test_secret_key]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Test key starts with sk_test_', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Test key starts with sk_test_', 'stripe-custom-donations') . '</p>';
     }
 
     public function test_publishable_key_callback()
@@ -404,7 +416,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['stripe_test_publishable_key']) ? $options['stripe_test_publishable_key'] : '';
         echo '<input type="text" name="' . $this->option_name . '[stripe_test_publishable_key]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Test key starts with pk_test_', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Test key starts with pk_test_', 'stripe-custom-donations') . '</p>';
     }
 
     public function test_webhook_secret_callback()
@@ -412,7 +424,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['stripe_test_webhook_secret']) ? $options['stripe_test_webhook_secret'] : '';
         echo '<input type="password" name="' . $this->option_name . '[stripe_test_webhook_secret]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Test webhook secret starts with whsec_ (from Stripe test webhook endpoint)', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Test webhook secret starts with whsec_ (from Stripe test webhook endpoint)', 'stripe-custom-donations') . '</p>';
     }
 
     public function predefined_amounts_callback()
@@ -420,7 +432,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['predefined_amounts']) ? $options['predefined_amounts'] : '10,20,50,100';
         echo '<input type="text" name="' . $this->option_name . '[predefined_amounts]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Comma-separated values (e.g., 10,20,50,100)', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Comma-separated values (e.g., 10,20,50,100)', 'stripe-custom-donations') . '</p>';
     }
 
     public function currency_callback()
@@ -428,7 +440,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['currency']) ? $options['currency'] : 'usd';
         echo '<input type="text" name="' . $this->option_name . '[currency]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('3-letter ISO code (e.g., usd)', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('3-letter ISO code (e.g., usd)', 'stripe-custom-donations') . '</p>';
     }
 
     public function recurring_intervals_callback()
@@ -437,11 +449,11 @@ class SCD_Settings
         $selected = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('monthly', 'quarterly', 'yearly');
 
         $intervals = array(
-            'daily' => __('Daily', 'stripe-donations'),
-            'weekly' => __('Weekly', 'stripe-donations'),
-            'monthly' => __('Monthly', 'stripe-donations'),
-            'quarterly' => __('Quarterly (Every 3 months)', 'stripe-donations'),
-            'yearly' => __('Yearly', 'stripe-donations')
+            'daily' => __('Daily', 'stripe-custom-donations'),
+            'weekly' => __('Weekly', 'stripe-custom-donations'),
+            'monthly' => __('Monthly', 'stripe-custom-donations'),
+            'quarterly' => __('Quarterly (Every 3 months)', 'stripe-custom-donations'),
+            'yearly' => __('Yearly', 'stripe-custom-donations')
         );
 
         foreach ($intervals as $key => $label) {
@@ -455,7 +467,7 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['button_label']) ? $options['button_label'] : 'Donate';
         echo '<input type="text" name="' . $this->option_name . '[button_label]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('It will be text of the button', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('It will be text of the button', 'stripe-custom-donations') . '</p>';
     }
 
     public function submission_method_callback()
@@ -467,38 +479,46 @@ class SCD_Settings
                     <option value="ajax" <?php selected($method, 'ajax'); ?>>AJAX (admin-ajax.php)</option>
                     <option value="rest" <?php selected($method, 'rest'); ?>>REST API (/wp-json/)</option>
                 </select>
-                <p class="description"><?php _e('Use REST API if admin-ajax.php returns 403 for non-logged-in users', 'stripe-donations'); ?></p>
+                <p class="description"><?php _e('Use REST API if admin-ajax.php returns 403 for non-logged-in users', 'stripe-custom-donations'); ?></p>
         <?php
+    }
+
+    public function donation_page_url_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['donation_page_url']) ? $options['donation_page_url'] : '/support-us';
+        echo '<input type="text" name="' . $this->option_name . '[donation_page_url]" value="' . esc_attr($value) . '" class="regular-text" />';
+        echo '<p class="description">' . __('Path of the page containing the donation form (used for Stripe redirects), e.g. /support-us', 'stripe-custom-donations') . '</p>';
     }
 
     // Email section callback
     public function email_section_callback()
     {
-        echo '<p>' . __('Configure email confirmation settings. Use placeholders for dynamic content.', 'stripe-donations') . '</p>';
-        echo '<p><strong>' . __('Available Placeholders:', 'stripe-donations') . '</strong></p>';
+        echo '<p>' . __('Configure email confirmation settings. Use placeholders for dynamic content.', 'stripe-custom-donations') . '</p>';
+        echo '<p><strong>' . __('Available Placeholders:', 'stripe-custom-donations') . '</strong></p>';
         echo '<ul style="list-style: disc; margin-left: 20px;">';
-        echo '<li><code>{amount}</code> - ' . __('Donation amount with currency symbol', 'stripe-donations') . '</li>';
-        echo '<li><code>{email}</code> - ' . __('Donor email address', 'stripe-donations') . '</li>';
-        echo '<li><code>{payment_type}</code> - ' . __('One-time or Recurring', 'stripe-donations') . '</li>';
-        echo '<li><code>{interval}</code> - ' . __('Billing interval (for recurring donations)', 'stripe-donations') . '</li>';
-        echo '<li><code>{date}</code> - ' . __('Current date', 'stripe-donations') . '</li>';
+        echo '<li><code>{amount}</code> - ' . __('Donation amount with currency symbol', 'stripe-custom-donations') . '</li>';
+        echo '<li><code>{email}</code> - ' . __('Donor email address', 'stripe-custom-donations') . '</li>';
+        echo '<li><code>{payment_type}</code> - ' . __('One-time or Recurring', 'stripe-custom-donations') . '</li>';
+        echo '<li><code>{interval}</code> - ' . __('Billing interval (for recurring donations)', 'stripe-custom-donations') . '</li>';
+        echo '<li><code>{date}</code> - ' . __('Current date', 'stripe-custom-donations') . '</li>';
         echo '</ul>';
     }
 
     public function email_from_name_callback()
     {
         $options = get_option($this->option_name);
-        $value = isset($options['email_from_name']) ? $options['email_from_name'] : 'CRS Accounts Receivable';
+        $value = isset($options['email_from_name']) ? $options['email_from_name'] : get_bloginfo('name');
         echo '<input type="text" name="' . $this->option_name . '[email_from_name]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Name that appears in donor\'s inbox', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Name that appears in donor\'s inbox', 'stripe-custom-donations') . '</p>';
     }
 
     public function email_from_address_callback()
     {
         $options = get_option($this->option_name);
-        $value = isset($options['email_from_address']) ? $options['email_from_address'] : 'info@resource-solutions.org';
+        $value = isset($options['email_from_address']) ? $options['email_from_address'] : get_bloginfo('admin_email');
         echo '<input type="email" name="' . $this->option_name . '[email_from_address]" value="' . esc_attr($value) . '" class="regular-text" />';
-        echo '<p class="description">' . __('Email address that appears as sender', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Email address that appears as sender', 'stripe-custom-donations') . '</p>';
     }
 
     public function email_subject_callback()
@@ -506,17 +526,17 @@ class SCD_Settings
         $options = get_option($this->option_name);
         $value = isset($options['email_subject']) ? $options['email_subject'] : 'Thank you for your contribution';
         echo '<input type="text" name="' . $this->option_name . '[email_subject]" value="' . esc_attr($value) . '" class="large-text" />';
-        echo '<p class="description">' . __('Email subject line (placeholders supported)', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Email subject line (placeholders supported)', 'stripe-custom-donations') . '</p>';
     }
 
     public function email_template_callback()
     {
         $options = get_option($this->option_name);
-        $default_template = "Thank you for your contribution of {amount} to the ongoing work of Center for Resource Solutions (CRS). We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please call us at +1-415-561-2100 or email info@resource-solutions.org.";
+        $default_template = "Thank you for your contribution of {amount}. We deeply appreciate your support. A receipt will be emailed to you soon. If you have any questions, please reply to this email.";
 
         $value = isset($options['email_template']) ? $options['email_template'] : $default_template;
 
         echo '<textarea name="' . $this->option_name . '[email_template]" rows="8" class="large-text code">' . esc_textarea($value) . '</textarea>';
-        echo '<p class="description">' . __('Email message body. Use placeholders like {amount}, {email}, {payment_type}, {interval}, {date}', 'stripe-donations') . '</p>';
+        echo '<p class="description">' . __('Email message body. Use placeholders like {amount}, {email}, {payment_type}, {interval}, {date}', 'stripe-custom-donations') . '</p>';
     }
 }

@@ -1,0 +1,10 @@
+= 1.0.0 =
+* Initial release
+* One-time and recurring donation support
+* Custom amount input
+* Predefined amount buttons
+* Multi-interval recurring options (daily, weekly, monthly, quarterly, yearly)
+* Stripe webhook integration
+* Email confirmations
+* Database donation tracking
+* Admin settings page with secure key storage
