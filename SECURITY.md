@@ -6,7 +6,7 @@
 
 Please report vulnerabilities privately using GitHub's Security Advisory feature:
 
-- [Report a vulnerability](https://github.com/iamakram22/stripe-custom-donations/security/advisories/new)
+- [Report a vulnerability](https://github.com/iamakram22/custom-donations-for-stripe/security/advisories/new)
 
 Include:
 

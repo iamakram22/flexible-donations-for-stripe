@@ -78,6 +78,7 @@ class SCD_Webhook_Handler
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- custom table, no WP API exists
         $wpdb->update(
             $wpdb->prefix . 'stripe_donations',
             array(
@@ -101,6 +102,7 @@ class SCD_Webhook_Handler
         // Log recurring payment
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- custom table, no WP API exists
         $wpdb->insert(
             $wpdb->prefix . 'stripe_donations',
             array(
@@ -122,6 +124,7 @@ class SCD_Webhook_Handler
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- custom table, no WP API exists
         $wpdb->update(
             $wpdb->prefix . 'stripe_donations',
             array('status' => 'cancelled'),

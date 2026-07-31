@@ -1,18 +1,18 @@
 <?php
 /**
- * Plugin Name: Stripe Custom Donations
- * Plugin URI: https://github.com/iamakram22/stripe-custom-donations
+ * Plugin Name: Custom Donations for Stripe
+ * Plugin URI: https://github.com/iamakram22/custom-donations-for-stripe
  * Description: Accept one-time and recurring donations via Stripe Checkout with custom amounts, sandbox testing, and webhook-based confirmation.
- * Version: 3.1.0
+ * Version: 3.2.0
  * Author: Mohd Akram
  * Author URI: https://github.com/iamakram22
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: stripe-custom-donations
+ * Text Domain: custom-donations-for-stripe
  * Requires at least: 6.0
  * Requires PHP: 7.4
  *
- * @package Stripe_Custom_Donations
+ * @package Custom_Donations_For_Stripe
  */
 
 // Copyright (c) 2026 Mohd Akram.
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SCD_VERSION', '3.1.0');
+define('SCD_VERSION', '3.2.0');
 define('SCD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SCD_PLUGIN_URL', plugin_dir_url(__FILE__));
 

@@ -1,8 +1,8 @@
-# Stripe Custom Donations - WordPress Plugin
+# Custom Donations for Stripe - WordPress Plugin
 
 A powerful, lightweight WordPress plugin for accepting one-time and recurring donations via Stripe with custom amount support.
 
-![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-6.0%2B-green.svg)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-red.svg)
@@ -35,14 +35,14 @@ A powerful, lightweight WordPress plugin for accepting one-time and recurring do
 ### Step 1: Upload Plugin Files
 
 1. Download or clone this repository
-2. Upload the `stripe-custom-donations` folder to `/wp-content/plugins/`
+2. Upload the `custom-donations-for-stripe` folder to `/wp-content/plugins/`
 
 ### Step 2: Install Dependencies
 
 Navigate to the plugin directory and run:
 
 ```bash
-cd wp-content/plugins/stripe-custom-donations
+cd wp-content/plugins/custom-donations-for-stripe
 composer install --no-dev
 ```
 
@@ -51,7 +51,7 @@ This will install the Stripe PHP SDK (v19.1).
 ### Step 3: Activate Plugin
 
 1. Go to WordPress Admin → **Plugins**
-2. Find "Stripe Custom Donations"
+2. Find "Custom Donations for Stripe"
 3. Click **Activate**
 
 ## ⚙️ Configuration
@@ -147,8 +147,8 @@ Use the shortcode to display the donation form anywhere:
 ## 📁 File Structure
 
 ```
-stripe-custom-donations/
-├── stripe-custom-donations.php    # Main plugin file
+custom-donations-for-stripe/
+├── custom-donations-for-stripe.php    # Main plugin file
 ├── composer.json                   # Composer dependencies
 ├── README.md                       # This file
 ├── includes/
@@ -246,10 +246,10 @@ Use the **Donation Button Label** setting in admin panel.
 
 ```bash
 # Clone repository
-git clone https://github.com/iamakram22/stripe-custom-donations.git
+git clone https://github.com/iamakram22/custom-donations-for-stripe.git
 
 # Install dependencies
-cd stripe-custom-donations
+cd custom-donations-for-stripe
 composer install
 
 # Enable WordPress debug mode in wp-config.php
@@ -336,6 +336,11 @@ Check logs at: `wp-content/debug.log`
 
 ## 📝 Changelog
 
+### Version 3.2.0 (July 2026)
+- Renamed to **Custom Donations for Stripe** (slug `custom-donations-for-stripe`) for WordPress.org
+- Fixed escaping and input sanitization issues flagged by the Plugin Check tool
+- Fixed direct database query warnings flagged by the Plugin Check tool
+
 ### Version 3.1.0 (July 2026)
 
 - Sandbox / Test mode with separate test keys (mode toggle without touching live keys)
@@ -395,7 +400,7 @@ This project is licensed under the GPL-2.0 License - see WordPress.org for detai
 For support, please:
 
 1. Check the [Troubleshooting](#-troubleshooting) section
-2. Search existing [GitHub Issues](https://github.com/iamakram22/stripe-custom-donations/issues)
+2. Search existing [GitHub Issues](https://github.com/iamakram22/custom-donations-for-stripe/issues)
 3. Open a new issue with detailed information
 
 ## 🔗 Links

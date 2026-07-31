@@ -46,20 +46,22 @@ class SCD_Donation_Handler
         $predefined_amounts = isset($options['predefined_amounts']) ? explode(',', $options['predefined_amounts']) : array('500', '1000', '2000', '5000');
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
         $intervals = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('daily', 'weekly', 'monthly', 'quarterly', 'yearly');
-        $button_label = isset($options['button_label']) ? $options['button_label'] : __('Proceed to Payment', 'stripe-custom-donations');
+        $button_label = isset($options['button_label']) ? $options['button_label'] : __('Proceed to Payment', 'custom-donations-for-stripe');
 
         // Read query params
-        $session_id = isset($_GET['session_id']) ? sanitize_text_field($_GET['session_id']) : '';
-        $donation_status = isset($_GET['donation']) ? sanitize_text_field($_GET['donation']) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only redirect params
+        $session_id = isset($_GET['session_id']) ? sanitize_text_field(wp_unslash($_GET['session_id'])) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only redirect params
+        $donation_status = isset($_GET['donation']) ? sanitize_text_field(wp_unslash($_GET['donation'])) : '';
 
         // Build message state
         $success_message = '';
         $error_message = '';
 
         if (!empty($session_id)) {
-            $success_message = __('Thank you! Your donation was successfully processed.', 'stripe-custom-donations');
+            $success_message = __('Thank you! Your donation was successfully processed.', 'custom-donations-for-stripe');
         } elseif ($donation_status === 'cancelled') {
-            $error_message = __('Your donation was cancelled. You can try again below.', 'stripe-custom-donations');
+            $error_message = __('Your donation was cancelled. You can try again below.', 'custom-donations-for-stripe');
         }
 
         ob_start();
@@ -79,7 +81,7 @@ class SCD_Donation_Handler
                 <div class="scd-error-message" style="display:none;"></div>
             <?php endif; ?>
 
-            <h3><?php _e('Make a Donation', 'stripe-custom-donations'); ?></h3>
+            <h3><?php esc_html_e('Make a Donation', 'custom-donations-for-stripe'); ?></h3>
 
             <form id="scd-donation-form">
                 <!-- Predefined Amounts -->
@@ -93,14 +95,14 @@ class SCD_Donation_Handler
 
                 <!-- Custom Amount -->
                 <div class="scd-custom-amount">
-                    <label for="scd-custom-amount"><?php _e('Or enter custom amount:', 'stripe-custom-donations'); ?></label>
+                    <label for="scd-custom-amount"><?php esc_html_e('Or enter custom amount:', 'custom-donations-for-stripe'); ?></label>
                     <input type="number" id="scd-custom-amount" name="custom_amount" min="1"
-                        placeholder="<?php _e('Enter amount', 'stripe-custom-donations'); ?>" required>
+                        placeholder="<?php esc_attr_e('Enter amount', 'custom-donations-for-stripe'); ?>" required>
                 </div>
 
                 <!-- Email -->
                 <div class="scd-email">
-                    <label for="scd-email"><?php _e('Email:', 'stripe-custom-donations'); ?></label>
+                    <label for="scd-email"><?php esc_html_e('Email:', 'custom-donations-for-stripe'); ?></label>
                     <input type="email" id="scd-email" name="email" required>
                 </div>
 
@@ -108,32 +110,32 @@ class SCD_Donation_Handler
                 <div class="scd-payment-type">
                     <label>
                         <input type="radio" name="payment_type" value="one_time" checked>
-                        <?php _e('One-time donation', 'stripe-custom-donations'); ?>
+                        <?php esc_html_e('One-time donation', 'custom-donations-for-stripe'); ?>
                     </label>
                     <label>
                         <input type="radio" name="payment_type" value="recurring">
-                        <?php _e('Recurring donation', 'stripe-custom-donations'); ?>
+                        <?php esc_html_e('Recurring donation', 'custom-donations-for-stripe'); ?>
                     </label>
                 </div>
 
                 <!-- Recurring Interval (shown when recurring is selected) -->
                 <div class="scd-interval" style="display: none;">
-                    <label for="scd-interval"><?php _e('Frequency:', 'stripe-custom-donations'); ?></label>
+                    <label for="scd-interval"><?php esc_html_e('Frequency:', 'custom-donations-for-stripe'); ?></label>
                     <select id="scd-interval" name="interval">
                         <?php if (in_array('daily', $intervals)) : ?>
-                            <option value="daily"><?php _e('Daily', 'stripe-custom-donations'); ?></option>
+                            <option value="daily"><?php esc_html_e('Daily', 'custom-donations-for-stripe'); ?></option>
                         <?php endif; ?>
                         <?php if (in_array('weekly', $intervals)) : ?>
-                            <option value="weekly"><?php _e('Weekly', 'stripe-custom-donations'); ?></option>
+                            <option value="weekly"><?php esc_html_e('Weekly', 'custom-donations-for-stripe'); ?></option>
                         <?php endif; ?>
                         <?php if (in_array('monthly', $intervals)) : ?>
-                            <option value="monthly"><?php _e('Monthly', 'stripe-custom-donations'); ?></option>
+                            <option value="monthly"><?php esc_html_e('Monthly', 'custom-donations-for-stripe'); ?></option>
                         <?php endif; ?>
                         <?php if (in_array('quarterly', $intervals)) : ?>
-                            <option value="quarterly"><?php _e('Quarterly', 'stripe-custom-donations'); ?></option>
+                            <option value="quarterly"><?php esc_html_e('Quarterly', 'custom-donations-for-stripe'); ?></option>
                         <?php endif; ?>
                         <?php if (in_array('yearly', $intervals)) : ?>
-                            <option value="yearly"><?php _e('Yearly', 'stripe-custom-donations'); ?></option>
+                            <option value="yearly"><?php esc_html_e('Yearly', 'custom-donations-for-stripe'); ?></option>
                         <?php endif; ?>
                     </select>
                 </div>
@@ -156,18 +158,18 @@ class SCD_Donation_Handler
         check_ajax_referer('scd_donation_nonce', 'nonce');
 
         // Get and sanitize form data [web:42]
-        $amount = isset($_POST['amount']) ? floatval($_POST['amount']) : 0;
-        $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
-        $payment_type = isset($_POST['payment_type']) ? sanitize_text_field($_POST['payment_type']) : 'one_time';
-        $interval = isset($_POST['interval']) ? sanitize_text_field($_POST['interval']) : 'monnthly';
+        $amount = isset($_POST['amount']) ? floatval(wp_unslash($_POST['amount'])) : 0;
+        $email = isset($_POST['email']) ? sanitize_email(wp_unslash($_POST['email'])) : '';
+        $payment_type = isset($_POST['payment_type']) ? sanitize_text_field(wp_unslash($_POST['payment_type'])) : 'one_time';
+        $interval = isset($_POST['interval']) ? sanitize_text_field(wp_unslash($_POST['interval'])) : 'monnthly';
 
         // Validate
         if ($amount < 10) {
-            wp_send_json_error(array('message' => __('Minimum donation amount is 10', 'stripe-custom-donations')));
+            wp_send_json_error(array('message' => __('Minimum donation amount is 10', 'custom-donations-for-stripe')));
         }
 
         if (!is_email($email)) {
-            wp_send_json_error(array('message' => __('Invalid email address', 'stripe-custom-donations')));
+            wp_send_json_error(array('message' => __('Invalid email address', 'custom-donations-for-stripe')));
         }
 
         // Get Stripe settings
@@ -180,7 +182,7 @@ class SCD_Donation_Handler
         $statement_descriptor = substr(preg_replace('/[^a-zA-Z0-9 ]/', '', !empty($options['statement_descriptor']) ? $options['statement_descriptor'] : $org_name), 0, 22);
 
         if (empty($secret_key)) {
-            wp_send_json_error(array('message' => __('Stripe is not configured', 'stripe-custom-donations')));
+            wp_send_json_error(array('message' => __('Stripe is not configured', 'custom-donations-for-stripe')));
         }
 
         try {
@@ -290,6 +292,7 @@ class SCD_Donation_Handler
 
             // Save donation record
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- custom table, no WP API exists
             $wpdb->insert(
                 $wpdb->prefix . 'stripe_donations',
                 array(
@@ -323,11 +326,11 @@ class SCD_Donation_Handler
         $interval = sanitize_text_field($request->get_param('interval'));
 
         if ($amount < 10) {
-            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Minimum donation amount is 10', 'stripe-custom-donations'))), 400);
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Minimum donation amount is 10', 'custom-donations-for-stripe'))), 400);
         }
 
         if (!is_email($email)) {
-            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Invalid email address', 'stripe-custom-donations'))), 400);
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Invalid email address', 'custom-donations-for-stripe'))), 400);
         }
 
         $options = get_option('scd_stripe_settings');
@@ -339,7 +342,7 @@ class SCD_Donation_Handler
         $statement_descriptor = substr(preg_replace('/[^a-zA-Z0-9 ]/', '', !empty($options['statement_descriptor']) ? $options['statement_descriptor'] : $org_name), 0, 22);
 
         if (empty($secret_key)) {
-            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Stripe is not configured', 'stripe-custom-donations'))), 400);
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Stripe is not configured', 'custom-donations-for-stripe'))), 400);
         }
 
         try {
@@ -432,6 +435,7 @@ class SCD_Donation_Handler
             $session = \Stripe\Checkout\Session::create($session_params);
 
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- custom table, no WP API exists
             $wpdb->insert(
                 $wpdb->prefix . 'stripe_donations',
                 array(

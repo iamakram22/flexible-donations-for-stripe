@@ -1,10 +1,9 @@
-=== Stripe Custom Donations ===
+=== Custom Donations for Stripe ===
 Contributors: iamakram22
-Tags: stripe, donations, donation form, recurring donations, payment gateway, donate, fundraising, checkout, webhook
+Tags: donations, donation form, recurring donations, payment gateway, webhook
 Requires at least: 6.0
-Tested up to: 7.0.2
-Requires PHP: 7.4
-Stable tag: 3.1.0
+Tested up to: 7.0
+Stable tag: 3.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +11,7 @@ Accept one-time and recurring donations via Stripe Checkout with custom amounts,
 
 == Description ==
 
-Stripe Custom Donations lets you accept donations directly through [Stripe Checkout](https://stripe.com/checkout), the PCI-compliant hosted payment page. Donations go straight to your Stripe account - no transaction fees beyond Stripe's own.
+Custom Donations for Stripe lets you accept donations directly through [Stripe Checkout](https://stripe.com/checkout), the PCI-compliant hosted payment page. Donations go straight to your Stripe account - no transaction fees beyond Stripe's own.
 
 = Key Features =
 
@@ -42,7 +41,7 @@ Your live keys are stored separately and are never touched when you switch modes
 
 == Installation ==
 
-1. Upload the `stripe-custom-donations` folder to `/wp-content/plugins/`
+1. Upload the `custom-donations-for-stripe` folder to `/wp-content/plugins/`
 2. Activate the plugin through the **Plugins** menu in WordPress
 3. Go to **Settings → Stripe Donations** and enter your Stripe Secret Key, Publishable Key, and Webhook Secret (from [Stripe Dashboard → Developers](https://dashboard.stripe.com/developers))
 4. Add the `[stripe_donation_form]` shortcode to any page
@@ -94,6 +93,11 @@ Cards through Stripe Checkout. Stripe handles the full payment experience.
 This plugin does not collect, store, or transmit any personal data on its own. Donation information (donor email address and amount) is sent to Stripe, the payment processor, when creating a checkout session. Data is stored in your site's database (`stripe_donations` table) for donation tracking purposes.
 
 == Changelog ==
+
+= 3.2.0 =
+* Renamed to Custom Donations for Stripe and moved to the custom-donations-for-stripe slug
+* Fixed escaping and input sanitization issues flagged by the Plugin Check tool
+* Fixed direct database query warnings flagged by the Plugin Check tool
 
 = 3.1.0 =
 * Added Sandbox / Test mode with separate test keys and a live/test toggle
