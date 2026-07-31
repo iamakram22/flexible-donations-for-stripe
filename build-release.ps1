@@ -19,11 +19,14 @@ if (Test-Path $releaseDir) { Remove-Item -Recurse -Force $releaseDir }
 function Copy-Package($dest) {
     $target = Join-Path $dest $plugin
     New-Item -ItemType Directory -Force -Path $target | Out-Null
-    Copy-Item -Recurse -Force "$root\stripe-custom-donations.php", "$root\includes", "$root\assets\css", "$root\assets\js", "$root\index.php", "$root\readme.txt", "$root\changelog.txt", "$root\LICENSE", "$root\vendor" -Destination $target
+    Copy-Item -Recurse -Force "$root\stripe-custom-donations.php", "$root\includes", "$root\index.php", "$root\readme.txt", "$root\changelog.txt", "$root\LICENSE", "$root\vendor" -Destination $target
+    New-Item -ItemType Directory -Force -Path "$target\assets" | Out-Null
+    Copy-Item -Recurse -Force "$root\assets\css", "$root\assets\js" -Destination "$target\assets"
 }
 
 Copy-Package $svnTrunk
 Copy-Package $svnTag
+New-Item -ItemType Directory -Force -Path $svnAssets | Out-Null
 Copy-Item -Recurse -Force "$root\assets\banner-*.png", "$root\assets\icon-*.png", "$root\assets\screenshot-*.png" -Destination $svnAssets
 
 $zip = Join-Path $releaseDir "stripe-custom-donations-$version.zip"
