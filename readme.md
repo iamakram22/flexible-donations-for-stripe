@@ -100,6 +100,14 @@ Test donations safely without touching your live keys:
 | **Recurring Intervals** | Check boxes for enabled intervals | Daily, Weekly, Monthly, Quarterly, or Yearly |
 | **Button Label** | Custom text for submit button | "Proceed to Payment" or whatever set in settings page |
 | **Submission Method** | How the form submits checkout requests: `AJAX (admin-ajax.php)` or `REST API (/wp-json/)` | `ajax` or `rest` |
+| **Donation Page Path** | Path of the page containing the donation form (used for Stripe redirect URLs) | `/support-us` |
+| **Statement Descriptor** | Text shown on donor bank statements (max 22 chars; empty = site title) | `Your Org Name` |
+
+## 📸 Screenshots
+
+![Donation form](assets/screenshot-1.png)
+
+![Settings page](assets/screenshot-2.png)
 
 ### 2. Set Up Stripe Webhook
 
@@ -387,7 +395,7 @@ This project is licensed under the GPL-2.0 License - see WordPress.org for detai
 For support, please:
 
 1. Check the [Troubleshooting](#-troubleshooting) section
-2. Search existing [GitHub Issues](https://github.com/yourusername/stripe-custom-donations/issues)
+2. Search existing [GitHub Issues](https://github.com/iamakram22/stripe-custom-donations/issues)
 3. Open a new issue with detailed information
 
 ## 🔗 Links
