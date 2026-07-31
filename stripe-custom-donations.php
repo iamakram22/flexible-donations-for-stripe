@@ -80,8 +80,13 @@ function scd_enqueue_assets()
     wp_enqueue_script('scd-donation-form', SCD_PLUGIN_URL . 'assets/js/donation-form.js', array('jquery'), SCD_VERSION, true);
 
     // Localize script with AJAX URL and nonce
+    $options = get_option('scd_stripe_settings');
+    $method = isset($options['submission_method']) ? $options['submission_method'] : 'ajax';
+
     wp_localize_script('scd-donation-form', 'scdAjax', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('scd_donation_nonce')
+        'ajax_url'   => admin_url('admin-ajax.php'),
+        'rest_url'   => get_rest_url(null, 'scd/v1/create-checkout-session'),
+        'nonce'      => wp_create_nonce('scd_donation_nonce'),
+        'method'     => $method,
     ));
 }

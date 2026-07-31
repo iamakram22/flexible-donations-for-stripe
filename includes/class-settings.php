@@ -117,6 +117,14 @@ class SCD_Settings
             'scd_donation_section'
         );
 
+        add_settings_field(
+            'submission_method',
+            __('Submission Method', 'stripe-donations'),
+            array($this, 'submission_method_callback'),
+            'stripe-donations-settings',
+            'scd_donation_section'
+        );
+
         // Section: Email Configuration
         add_settings_section(
             'scd_email_section',
@@ -196,6 +204,10 @@ class SCD_Settings
         // Sanitize button label
         if (isset($input['button_label'])) {
             $sanitized['button_label'] = sanitize_text_field($input['button_label']);
+        }
+
+        if (isset($input['submission_method'])) {
+            $sanitized['submission_method'] = in_array($input['submission_method'], array('ajax', 'rest')) ? $input['submission_method'] : 'ajax';
         }
 
         // Sanitize email settings
@@ -332,6 +344,19 @@ class SCD_Settings
         $value = isset($options['button_label']) ? $options['button_label'] : 'Donate';
         echo '<input type="text" name="' . $this->option_name . '[button_label]" value="' . esc_attr($value) . '" class="regular-text" />';
         echo '<p class="description">' . __('It will be text of the button', 'stripe-donations') . '</p>';
+    }
+
+    public function submission_method_callback()
+    {
+        $options = get_option($this->option_name);
+        $method = isset($options['submission_method']) ? $options['submission_method'] : 'ajax';
+        ?>
+                <select name="<?php echo $this->option_name; ?>[submission_method]">
+                    <option value="ajax" <?php selected($method, 'ajax'); ?>>AJAX (admin-ajax.php)</option>
+                    <option value="rest" <?php selected($method, 'rest'); ?>>REST API (/wp-json/)</option>
+                </select>
+                <p class="description"><?php _e('Use REST API if admin-ajax.php returns 403 for non-logged-in users', 'stripe-donations'); ?></p>
+        <?php
     }
 
     // Email section callback

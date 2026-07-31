@@ -17,6 +17,18 @@ class SCD_Donation_Handler
         // Register AJAX handlers (for both logged-in and non-logged-in users)
         add_action('wp_ajax_scd_create_checkout_session', array($this, 'create_checkout_session'));
         add_action('wp_ajax_nopriv_scd_create_checkout_session', array($this, 'create_checkout_session'));
+
+        // Register REST API route
+        add_action('rest_api_init', array($this, 'register_rest_routes'));
+    }
+
+    public function register_rest_routes()
+    {
+        register_rest_route('scd/v1', '/create-checkout-session', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'create_checkout_session_rest'),
+            'permission_callback' => '__return_true',
+        ));
     }
 
     /**
@@ -290,6 +302,150 @@ class SCD_Donation_Handler
         }
         catch (\Exception $e) {
             wp_send_json_error(array('message' => $e->getMessage()));
+        }
+    }
+
+    public function create_checkout_session_rest(WP_REST_Request $request)
+    {
+        $nonce = $request->get_param('nonce');
+        if (!wp_verify_nonce($nonce, 'scd_donation_nonce')) {
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => 'Invalid nonce')), 403);
+        }
+
+        $amount = floatval($request->get_param('amount'));
+        $email = sanitize_email($request->get_param('email'));
+        $payment_type = sanitize_text_field($request->get_param('payment_type'));
+        $interval = sanitize_text_field($request->get_param('interval'));
+
+        if ($amount < 10) {
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Minimum donation amount is 10', 'stripe-donations'))), 400);
+        }
+
+        if (!is_email($email)) {
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Invalid email address', 'stripe-donations'))), 400);
+        }
+
+        $options = get_option('scd_stripe_settings');
+        $secret_key = isset($options['stripe_secret_key']) ? $options['stripe_secret_key'] : '';
+        $currency = isset($options['currency']) ? $options['currency'] : 'inr';
+
+        if (empty($secret_key)) {
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Stripe is not configured', 'stripe-donations'))), 400);
+        }
+
+        try {
+            \Stripe\Stripe::setApiKey($secret_key);
+
+            $line_items = array();
+
+            if ($payment_type === 'recurring') {
+                switch ($interval) {
+                    case 'daily':
+                        $stripe_interval = 'day';
+                        $interval_count = 1;
+                        break;
+                    case 'weekly':
+                        $stripe_interval = 'week';
+                        $interval_count = 1;
+                        break;
+                    case 'quarterly':
+                        $stripe_interval = 'month';
+                        $interval_count = 3;
+                        break;
+                    case 'yearly':
+                        $stripe_interval = 'year';
+                        $interval_count = 1;
+                        break;
+                    default:
+                        $stripe_interval = 'month';
+                        $interval_count = 1;
+                        break;
+                }
+
+                $line_items[] = array(
+                    'price_data' => array(
+                        'currency' => $currency,
+                        'product_data' => array('name' => 'Donation'),
+                        'unit_amount' => $amount * 100,
+                        'recurring' => array(
+                            'interval' => $stripe_interval,
+                            'interval_count' => $interval_count,
+                        ),
+                    ),
+                    'quantity' => 1,
+                );
+
+                $mode = 'subscription';
+            } else {
+                $line_items[] = array(
+                    'price_data' => array(
+                        'currency' => $currency,
+                        'product_data' => array('name' => 'Donation'),
+                        'unit_amount' => $amount * 100,
+                    ),
+                    'quantity' => 1,
+                );
+
+                $mode = 'payment';
+            }
+
+            $session_params = array(
+                'payment_method_types' => array('card'),
+                'line_items' => $line_items,
+                'mode' => $mode,
+                'customer_email' => $email,
+                'success_url' => home_url('/support-us?session_id={CHECKOUT_SESSION_ID}'),
+                'cancel_url' => home_url('/support-us?donation=cancelled'),
+                'metadata' => array(
+                    'payment_type' => $payment_type,
+                    'interval' => $interval,
+                    'business_name' => 'Center for Resource Solutions',
+                    'website' => 'https://resource-solutions.org/support-us/',
+                ),
+            );
+
+            if ($mode === 'payment') {
+                $session_params['payment_intent_data'] = array(
+                    'description' => 'Donation',
+                    'statement_descriptor' => 'CRS Donation',
+                );
+            }
+
+            if ($mode === 'subscription') {
+                $session_params['subscription_data'] = array(
+                    'description' => 'Donation',
+                    'metadata' => array(
+                        'business_name' => 'Center for Resource Solutions',
+                    ),
+                );
+            }
+
+            $session = \Stripe\Checkout\Session::create($session_params);
+
+            global $wpdb;
+            $wpdb->insert(
+                $wpdb->prefix . 'stripe_donations',
+                array(
+                    'stripe_session_id' => $session->id,
+                    'customer_email' => $email,
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'payment_type' => $payment_type,
+                    'billing_interval' => $interval,
+                    'status' => 'pending',
+                ),
+                array('%s', '%s', '%f', '%s', '%s', '%s', '%s')
+            );
+
+            return new WP_REST_Response(array(
+                'success' => true,
+                'data' => array(
+                    'session_id' => $session->id,
+                    'url' => $session->url,
+                ),
+            ), 200);
+        } catch (\Exception $e) {
+            return new WP_REST_Response(array('success' => false, 'data' => array('message' => $e->getMessage())), 500);
         }
     }
 }

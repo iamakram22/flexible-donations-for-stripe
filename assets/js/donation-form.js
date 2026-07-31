@@ -44,8 +44,10 @@ jQuery(document).ready(function ($) {
         $btn.prop('disabled', true).text('Processing...');
 
         // Make AJAX request
+        var requestUrl = scdAjax.method === 'rest' ? scdAjax.rest_url : scdAjax.ajax_url;
+
         $.ajax({
-            url: scdAjax.ajax_url,
+            url: requestUrl,
             type: 'POST',
             data: {
                 action: 'scd_create_checkout_session',
