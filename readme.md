@@ -2,7 +2,7 @@
 
 A powerful, lightweight WordPress plugin for accepting one-time and recurring donations via Stripe with custom amount support.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-6.0%2B-green.svg)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-red.svg)
