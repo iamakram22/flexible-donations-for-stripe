@@ -77,6 +77,46 @@ class SCD_Settings
             'scd_api_section'
         );
 
+        // Section: Sandbox / Test Mode
+        add_settings_section(
+            'scd_test_section',
+            __('Sandbox / Test Mode', 'stripe-donations'),
+            array($this, 'test_section_callback'),
+            'stripe-donations-settings'
+        );
+
+        add_settings_field(
+            'stripe_mode',
+            __('Mode', 'stripe-donations'),
+            array($this, 'stripe_mode_callback'),
+            'stripe-donations-settings',
+            'scd_test_section'
+        );
+
+        add_settings_field(
+            'stripe_test_secret_key',
+            __('Test Secret Key', 'stripe-donations'),
+            array($this, 'test_secret_key_callback'),
+            'stripe-donations-settings',
+            'scd_test_section'
+        );
+
+        add_settings_field(
+            'stripe_test_publishable_key',
+            __('Test Publishable Key', 'stripe-donations'),
+            array($this, 'test_publishable_key_callback'),
+            'stripe-donations-settings',
+            'scd_test_section'
+        );
+
+        add_settings_field(
+            'stripe_test_webhook_secret',
+            __('Test Webhook Secret', 'stripe-donations'),
+            array($this, 'test_webhook_secret_callback'),
+            'stripe-donations-settings',
+            'scd_test_section'
+        );
+
         // Section: Donation Configuration
         add_settings_section(
             'scd_donation_section',
@@ -186,6 +226,23 @@ class SCD_Settings
             $sanitized['stripe_webhook_secret'] = sanitize_text_field($input['stripe_webhook_secret']);
         }
 
+        // Sanitize sandbox/test mode settings
+        if (isset($input['stripe_mode'])) {
+            $sanitized['stripe_mode'] = in_array($input['stripe_mode'], array('live', 'test')) ? $input['stripe_mode'] : 'live';
+        }
+
+        if (isset($input['stripe_test_secret_key'])) {
+            $sanitized['stripe_test_secret_key'] = sanitize_text_field($input['stripe_test_secret_key']);
+        }
+
+        if (isset($input['stripe_test_publishable_key'])) {
+            $sanitized['stripe_test_publishable_key'] = sanitize_text_field($input['stripe_test_publishable_key']);
+        }
+
+        if (isset($input['stripe_test_webhook_secret'])) {
+            $sanitized['stripe_test_webhook_secret'] = sanitize_text_field($input['stripe_test_webhook_secret']);
+        }
+
         // Sanitize predefined amounts (comma-separated)
         if (isset($input['predefined_amounts'])) {
             $sanitized['predefined_amounts'] = sanitize_text_field($input['predefined_amounts']);
@@ -248,6 +305,15 @@ class SCD_Settings
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <?php
+            $scd_options = get_option($this->option_name);
+            if (isset($scd_options['stripe_mode']) && $scd_options['stripe_mode'] === 'test') :
+                ?>
+                <div class="notice notice-warning">
+                    <p><strong><?php _e('WARNING: Test mode is ACTIVE.', 'stripe-donations'); ?></strong>
+                    <?php _e('Donations will NOT charge real cards. Switch back to Live mode when ready to accept real payments.', 'stripe-donations'); ?></p>
+                </div>
+            <?php endif; ?>
             <form action="options.php" method="post">
                 <?php
                 settings_fields($this->option_group);
@@ -278,6 +344,11 @@ class SCD_Settings
         echo '<p>' . __('Configure donation amounts and recurring intervals.', 'stripe-donations') . '</p>';
     }
 
+    public function test_section_callback()
+    {
+        echo '<p>' . __('Store separate Stripe test keys and switch between Live and Test mode without touching your live keys.', 'stripe-donations') . '</p>';
+    }
+
     // Field callbacks
     public function secret_key_callback()
     {
@@ -301,6 +372,47 @@ class SCD_Settings
         $value = isset($options['stripe_webhook_secret']) ? $options['stripe_webhook_secret'] : '';
         echo '<input type="password" name="' . $this->option_name . '[stripe_webhook_secret]" value="' . esc_attr($value) . '" class="regular-text" />';
         echo '<p class="description">' . __('Starts with whsec_', 'stripe-donations') . '</p>';
+    }
+
+    public function stripe_mode_callback()
+    {
+        $options = get_option($this->option_name);
+        $mode = isset($options['stripe_mode']) ? $options['stripe_mode'] : 'live';
+        ?>
+        <label>
+            <input type="radio" name="<?php echo $this->option_name; ?>[stripe_mode]" value="live" <?php checked($mode, 'live'); ?>>
+            <?php _e('Live mode (real payments)', 'stripe-donations'); ?>
+        </label>
+        <br>
+        <label>
+            <input type="radio" name="<?php echo $this->option_name; ?>[stripe_mode]" value="test" <?php checked($mode, 'test'); ?>>
+            <?php _e('Test mode (sandbox testing)', 'stripe-donations'); ?>
+        </label>
+        <?php
+    }
+
+    public function test_secret_key_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['stripe_test_secret_key']) ? $options['stripe_test_secret_key'] : '';
+        echo '<input type="password" name="' . $this->option_name . '[stripe_test_secret_key]" value="' . esc_attr($value) . '" class="regular-text" />';
+        echo '<p class="description">' . __('Test key starts with sk_test_', 'stripe-donations') . '</p>';
+    }
+
+    public function test_publishable_key_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['stripe_test_publishable_key']) ? $options['stripe_test_publishable_key'] : '';
+        echo '<input type="text" name="' . $this->option_name . '[stripe_test_publishable_key]" value="' . esc_attr($value) . '" class="regular-text" />';
+        echo '<p class="description">' . __('Test key starts with pk_test_', 'stripe-donations') . '</p>';
+    }
+
+    public function test_webhook_secret_callback()
+    {
+        $options = get_option($this->option_name);
+        $value = isset($options['stripe_test_webhook_secret']) ? $options['stripe_test_webhook_secret'] : '';
+        echo '<input type="password" name="' . $this->option_name . '[stripe_test_webhook_secret]" value="' . esc_attr($value) . '" class="regular-text" />';
+        echo '<p class="description">' . __('Test webhook secret starts with whsec_ (from Stripe test webhook endpoint)', 'stripe-donations') . '</p>';
     }
 
     public function predefined_amounts_callback()

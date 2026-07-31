@@ -166,7 +166,8 @@ class SCD_Donation_Handler
 
         // Get Stripe settings
         $options = get_option('scd_stripe_settings');
-        $secret_key = isset($options['stripe_secret_key']) ? $options['stripe_secret_key'] : '';
+        $active_keys = scd_get_active_keys();
+        $secret_key = $active_keys['stripe_secret_key'];
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
 
         if (empty($secret_key)) {
@@ -326,7 +327,8 @@ class SCD_Donation_Handler
         }
 
         $options = get_option('scd_stripe_settings');
-        $secret_key = isset($options['stripe_secret_key']) ? $options['stripe_secret_key'] : '';
+        $active_keys = scd_get_active_keys();
+        $secret_key = $active_keys['stripe_secret_key'];
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
 
         if (empty($secret_key)) {

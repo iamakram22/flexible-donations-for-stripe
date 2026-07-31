@@ -74,6 +74,22 @@ Navigate to **Settings → Stripe Donations** in WordPress admin.
 - Navigate to **Developers → API Keys**
 - Copy your keys (use test keys for testing)
 
+#### Sandbox / Test Mode
+
+Test donations safely without touching your live keys:
+
+| Setting | Description | Format |
+| :-- | :-- | :-- |
+| **Mode** | Switch between `Live mode` (real payments) and `Test mode` (sandbox testing) | `live` or `test` |
+| **Test Secret Key** | Stripe secret key for test mode | Starts with `sk_test_` |
+| **Test Publishable Key** | Stripe publishable key for test mode | Starts with `pk_test_` |
+| **Test Webhook Secret** | Webhook signing secret from a test-mode webhook endpoint | Starts with `whsec_` |
+
+- Live keys and test keys are stored separately — switching modes never overwrites your live keys
+- When **Test mode** is active, a warning banner is shown at the top of the settings page
+- Donations in test mode will NOT charge real cards (use `4242 4242 4242 4242` to simulate success)
+- Set up a **separate webhook endpoint in test mode** in Stripe Dashboard for webhook testing
+
 
 #### Donation Configuration
 
@@ -83,6 +99,7 @@ Navigate to **Settings → Stripe Donations** in WordPress admin.
 | **Currency** | 3-letter ISO currency code | `usd`, `inr`, `eur` |
 | **Recurring Intervals** | Check boxes for enabled intervals | Daily, Weekly, Monthly, Quarterly, or Yearly |
 | **Button Label** | Custom text for submit button | "Proceed to Payment" or whatever set in settings page |
+| **Submission Method** | How the form submits checkout requests: `AJAX (admin-ajax.php)` or `REST API (/wp-json/)` | `ajax` or `rest` |
 
 ### 2. Set Up Stripe Webhook
 
@@ -258,6 +275,11 @@ stripe listen --forward-to https://yoursite.local/wp-json/scd/v1/webhook
 - Solution: Verify API keys are entered correctly in settings
 - Check that keys start with correct prefix (`sk_test_` or `sk_live_`)
 
+**Problem: 403 Forbidden error on `admin-ajax.php` for non-logged-in users**
+
+- Solution: Switch **Submission Method** to **REST API** in Settings → Stripe Donations
+- This sends checkout requests to `/wp-json/scd/v1/create-checkout-session` instead of `wp-admin/admin-ajax.php`, bypassing server/host rules that block the `wp-admin` directory for visitors
+
 **Problem: Webhooks not working**
 
 - Solution: Ensure webhook URL is correct and accessible
@@ -305,6 +327,12 @@ Check logs at: `wp-content/debug.log`
 7. **Sanitize all user inputs** (already implemented)
 
 ## 📝 Changelog
+
+### Version 3.1.0 (July 2026)
+
+- Sandbox / Test mode with separate test keys (mode toggle without touching live keys)
+- REST API submission method option (fixes 403 errors on `admin-ajax.php`)
+- Test mode warning banner in settings page
 
 ### Version 1.0.0 (January 2026)
 

@@ -32,9 +32,9 @@ class SCD_Webhook_Handler
      */
     public function handle_webhook($request)
     {
-        $options = get_option('scd_stripe_settings');
-        $webhook_secret = isset($options['stripe_webhook_secret']) ? $options['stripe_webhook_secret'] : '';
-        $secret_key = isset($options['stripe_secret_key']) ? $options['stripe_secret_key'] : '';
+        $active_keys = scd_get_active_keys();
+        $webhook_secret = $active_keys['stripe_webhook_secret'];
+        $secret_key = $active_keys['stripe_secret_key'];
 
         if (empty($webhook_secret)) {
             return new WP_REST_Response(array('error' => 'Webhook not configured'), 400);

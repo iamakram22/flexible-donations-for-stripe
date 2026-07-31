@@ -3,7 +3,7 @@
  * Plugin Name: Stripe Custom Donations
  * Plugin URI: https://github.com/iamakram22/stripe-custom-donations
  * Description: Custom Stripe donation integration with recurring payments
- * Version: 3.0.0
+ * Version: 3.1.0
  * Author: Mohd Akram
  * Author URI: https://github.com/iamakram22
  * Text Domain: stripe-donations
@@ -42,6 +42,23 @@ function scd_init_plugin()
     new SCD_Webhook_Handler();
 }
 add_action('plugins_loaded', 'scd_init_plugin');
+
+// Resolve active Stripe keys based on mode (live/test)
+function scd_get_active_keys()
+{
+    $options = get_option('scd_stripe_settings');
+    $mode = isset($options['stripe_mode']) ? $options['stripe_mode'] : 'live';
+    $test = ($mode === 'test');
+
+    return array(
+        'stripe_secret_key' => $test
+            ? (isset($options['stripe_test_secret_key']) ? $options['stripe_test_secret_key'] : '')
+            : (isset($options['stripe_secret_key']) ? $options['stripe_secret_key'] : ''),
+        'stripe_webhook_secret' => $test
+            ? (isset($options['stripe_test_webhook_secret']) ? $options['stripe_test_webhook_secret'] : '')
+            : (isset($options['stripe_webhook_secret']) ? $options['stripe_webhook_secret'] : ''),
+    );
+}
 
 // Register activation hook
 register_activation_hook(__FILE__, 'scd_activate_plugin');
