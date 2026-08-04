@@ -1,9 +1,9 @@
-=== Custom Donations for Stripe ===
-Contributors: iamakram22
+=== Flexible Donations for Stripe ===
+Contributors: iamakram
 Tags: donations, donation form, recurring donations, payment gateway, webhook
 Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 3.2.0
+Stable tag: 3.3.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -11,7 +11,7 @@ Accept one-time and recurring donations via Stripe Checkout with custom amounts,
 
 == Description ==
 
-Custom Donations for Stripe lets you accept donations directly through [Stripe Checkout](https://stripe.com/checkout), the PCI-compliant hosted payment page. Donations go straight to your Stripe account - no transaction fees beyond Stripe's own.
+Flexible Donations for Stripe lets you accept donations directly through [Stripe Checkout](https://stripe.com/checkout), the PCI-compliant hosted payment page. Donations go straight to your Stripe account - no transaction fees beyond Stripe's own.
 
 = Key Features =
 
@@ -41,15 +41,15 @@ Your live keys are stored separately and are never touched when you switch modes
 
 == Installation ==
 
-1. Upload the `custom-donations-for-stripe` folder to `/wp-content/plugins/`
+1. Upload the `flexible-donations-for-stripe` folder to `/wp-content/plugins/`
 2. Activate the plugin through the **Plugins** menu in WordPress
 3. Go to **Settings → Stripe Donations** and enter your Stripe Secret Key, Publishable Key, and Webhook Secret (from [Stripe Dashboard → Developers](https://dashboard.stripe.com/developers))
-4. Add the `[stripe_donation_form]` shortcode to any page
+4. Add the `[fdfs_donation_form]` shortcode to any page
 
 = Webhook setup =
 
 1. In Stripe Dashboard, go to **Developers → Webhooks** and click **Add endpoint**
-2. Enter your webhook URL: `https://yoursite.com/wp-json/scd/v1/webhook`
+2. Enter your webhook URL: `https://yoursite.com/wp-json/fdfs/v1/webhook`
 3. Subscribe to these events:
     * `checkout.session.completed`
     * `invoice.payment_succeeded`
@@ -90,12 +90,17 @@ Cards through Stripe Checkout. Stripe handles the full payment experience.
 
 == Privacy ==
 
-This plugin does not collect, store, or transmit any personal data on its own. Donation information (donor email address and amount) is sent to Stripe, the payment processor, when creating a checkout session. Data is stored in your site's database (`stripe_donations` table) for donation tracking purposes.
+This plugin does not collect, store, or transmit any personal data on its own. Donation information (donor email address and amount) is sent to Stripe, the payment processor, when creating a checkout session. Data is stored in your site's database (`fdfs_donations` table) for donation tracking purposes.
 
 == Changelog ==
 
+= 3.3.0 =
+* Rebranded as Flexible Donations for Stripe with the flexible-donations-for-stripe slug
+* Upgraded Stripe PHP SDK to v21.1.1
+* Fixed settings page slug to use the plugin prefix instead of a generic word
+
 = 3.2.0 =
-* Renamed to Custom Donations for Stripe and moved to the custom-donations-for-stripe slug
+* Renamed to Flexible Donations for Stripe and moved to the flexible-donations-for-stripe slug
 * Fixed escaping and input sanitization issues flagged by the Plugin Check tool
 * Fixed direct database query warnings flagged by the Plugin Check tool
 

@@ -6,7 +6,7 @@
 if (!defined('ABSPATH'))
     exit;
 
-class SCD_Webhook_Handler
+class FDFS_Webhook_Handler
 {
 
     public function __construct()
@@ -20,7 +20,7 @@ class SCD_Webhook_Handler
      */
     public function register_webhook_endpoint()
     {
-        register_rest_route('scd/v1', '/webhook', array(
+        register_rest_route('fdfs/v1', '/webhook', array(
             'methods' => 'POST',
             'callback' => array($this, 'handle_webhook'),
             'permission_callback' => '__return_true', // Stripe signature verification handles security
@@ -32,7 +32,7 @@ class SCD_Webhook_Handler
      */
     public function handle_webhook($request)
     {
-        $active_keys = scd_get_active_keys();
+        $active_keys = fdfs_get_active_keys();
         $webhook_secret = $active_keys['stripe_webhook_secret'];
         $secret_key = $active_keys['stripe_secret_key'];
 
@@ -80,7 +80,7 @@ class SCD_Webhook_Handler
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- custom table, no WP API exists
         $wpdb->update(
-            $wpdb->prefix . 'stripe_donations',
+            $wpdb->prefix . 'fdfs_donations',
             array(
                 'status' => 'completed',
                 'stripe_subscription_id' => isset($session->subscription) ? $session->subscription : null,
@@ -104,7 +104,7 @@ class SCD_Webhook_Handler
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- custom table, no WP API exists
         $wpdb->insert(
-            $wpdb->prefix . 'stripe_donations',
+            $wpdb->prefix . 'fdfs_donations',
             array(
                 'stripe_subscription_id' => $invoice->subscription,
                 'customer_email' => $invoice->customer_email,
@@ -126,7 +126,7 @@ class SCD_Webhook_Handler
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- custom table, no WP API exists
         $wpdb->update(
-            $wpdb->prefix . 'stripe_donations',
+            $wpdb->prefix . 'fdfs_donations',
             array('status' => 'cancelled'),
             array('stripe_subscription_id' => $subscription->id),
             array('%s'),
@@ -141,7 +141,7 @@ class SCD_Webhook_Handler
     {
         try {
             // Get email settings
-            $options = get_option('scd_stripe_settings');
+            $options = get_option('fdfs_stripe_settings');
 
             // Email configuration
             $from_name = isset($options['email_from_name']) ? $options['email_from_name'] : get_bloginfo('name');

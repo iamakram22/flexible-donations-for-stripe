@@ -1,8 +1,8 @@
-# Custom Donations for Stripe - WordPress Plugin
+# Flexible Donations for Stripe - WordPress Plugin
 
 A powerful, lightweight WordPress plugin for accepting one-time and recurring donations via Stripe with custom amount support.
 
-![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-6.0%2B-green.svg)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-red.svg)
@@ -35,14 +35,14 @@ A powerful, lightweight WordPress plugin for accepting one-time and recurring do
 ### Step 1: Upload Plugin Files
 
 1. Download or clone this repository
-2. Upload the `custom-donations-for-stripe` folder to `/wp-content/plugins/`
+2. Upload the `flexible-donations-for-stripe` folder to `/wp-content/plugins/`
 
 ### Step 2: Install Dependencies
 
 Navigate to the plugin directory and run:
 
 ```bash
-cd wp-content/plugins/custom-donations-for-stripe
+cd wp-content/plugins/flexible-donations-for-stripe
 composer install --no-dev
 ```
 
@@ -51,7 +51,7 @@ This will install the Stripe PHP SDK (v19.1).
 ### Step 3: Activate Plugin
 
 1. Go to WordPress Admin → **Plugins**
-2. Find "Custom Donations for Stripe"
+2. Find "Flexible Donations for Stripe"
 3. Click **Activate**
 
 ## ⚙️ Configuration
@@ -118,7 +118,7 @@ Webhooks are required for payment confirmation and recurring donation tracking.
 3. Enter your webhook URL:
 
 ```
-https://yoursite.com/wp-json/scd/v1/webhook
+https://yoursite.com/wp-json/fdfs/v1/webhook
 ```
 
 4. Select events to listen to:
@@ -133,22 +133,22 @@ https://yoursite.com/wp-json/scd/v1/webhook
 Use the shortcode to display the donation form anywhere:
 
 ```
-[stripe_donation_form]
+[fdfs_donation_form]
 ```
 
 **Example Usage:**
 
-- Add to a page: Create/edit any page and insert `[stripe_donation_form]`
+- Add to a page: Create/edit any page and insert `[fdfs_donation_form]`
 - Add to a post: Insert shortcode in post content
 - Add to sidebar: Use a text/HTML widget with the shortcode
-- Add to theme: Use `<?php echo do_shortcode('[stripe_donation_form]'); ?>`
+- Add to theme: Use `<?php echo do_shortcode('[fdfs_donation_form]'); ?>`
 
 
 ## 📁 File Structure
 
 ```
-custom-donations-for-stripe/
-├── custom-donations-for-stripe.php    # Main plugin file
+flexible-donations-for-stripe/
+├── flexible-donations-for-stripe.php    # Main plugin file
 ├── composer.json                   # Composer dependencies
 ├── README.md                       # This file
 ├── includes/
@@ -181,10 +181,10 @@ custom-donations-for-stripe/
 
 #### View Donations
 
-Donations are stored in the database table `wp_stripe_donations`:
+Donations are stored in the database table `wp_fdfs_donations`:
 
 ```sql
-SELECT * FROM wp_stripe_donations ORDER BY created_at DESC;
+SELECT * FROM wp_fdfs_donations ORDER BY created_at DESC;
 ```
 
 **Database Fields:**
@@ -213,21 +213,21 @@ Override default styles by adding CSS to your theme:
 ```css
 /* Override root vars */
 :root {
-    --scd-accent: #0073aa;
-    --scd-accent-hover: #005177;
-    --scd-border: #ddd;
-    --scd-error: #f44336;
+    --fdfs-accent: #0073aa;
+    --fdfs-accent-hover: #005177;
+    --fdfs-border: #ddd;
+    --fdfs-error: #f44336;
 }
 
 /* Custom donation form styling */
-.scd-donation-form {
+.fdfs-donation-form {
     background: #ffffff;
-    border: 2px solid var(--scd-accent);
+    border: 2px solid var(--fdfs-accent);
 }
 
-.scd-amount-btn.active {
-    background: var(--scd-error);
-    border-color: var(--scd-error);
+.fdfs-amount-btn.active {
+    background: var(--fdfs-error);
+    border-color: var(--fdfs-error);
 }
 ```
 
@@ -246,10 +246,10 @@ Use the **Donation Button Label** setting in admin panel.
 
 ```bash
 # Clone repository
-git clone https://github.com/iamakram22/custom-donations-for-stripe.git
+git clone https://github.com/iamakram22/flexible-donations-for-stripe.git
 
 # Install dependencies
-cd custom-donations-for-stripe
+cd flexible-donations-for-stripe
 composer install
 
 # Enable WordPress debug mode in wp-config.php
@@ -270,7 +270,7 @@ define('WP_DEBUG_LOG', true);
 Use Stripe CLI for local webhook testing:
 
 ```bash
-stripe listen --forward-to https://yoursite.local/wp-json/scd/v1/webhook
+stripe listen --forward-to https://yoursite.local/wp-json/fdfs/v1/webhook
 ```
 
 
@@ -286,7 +286,7 @@ stripe listen --forward-to https://yoursite.local/wp-json/scd/v1/webhook
 **Problem: 403 Forbidden error on `admin-ajax.php` for non-logged-in users**
 
 - Solution: Switch **Submission Method** to **REST API** in Settings → Stripe Donations
-- This sends checkout requests to `/wp-json/scd/v1/create-checkout-session` instead of `wp-admin/admin-ajax.php`, bypassing server/host rules that block the `wp-admin` directory for visitors
+- This sends checkout requests to `/wp-json/fdfs/v1/create-checkout-session` instead of `wp-admin/admin-ajax.php`, bypassing server/host rules that block the `wp-admin` directory for visitors
 
 **Problem: Webhooks not working**
 
@@ -301,7 +301,7 @@ stripe listen --forward-to https://yoursite.local/wp-json/scd/v1/webhook
 
 **Problem: Form not displaying**
 
-- Solution: Check shortcode is correct: `[stripe_donation_form]`
+- Solution: Check shortcode is correct: `[fdfs_donation_form]`
 - Verify plugin is activated
 - Check for JavaScript errors in browser console
 
@@ -336,8 +336,13 @@ Check logs at: `wp-content/debug.log`
 
 ## 📝 Changelog
 
+### Version 3.3.0 (August 2026)
+- Rebranded as **Flexible Donations for Stripe** (slug `flexible-donations-for-stripe`)
+- Upgraded Stripe PHP SDK to v21.1.1
+- Settings page slug now uses the plugin prefix instead of a generic word
+
 ### Version 3.2.0 (July 2026)
-- Renamed to **Custom Donations for Stripe** (slug `custom-donations-for-stripe`) for WordPress.org
+- Renamed to **Flexible Donations for Stripe** (slug `flexible-donations-for-stripe`) for WordPress.org
 - Fixed escaping and input sanitization issues flagged by the Plugin Check tool
 - Fixed direct database query warnings flagged by the Plugin Check tool
 
@@ -387,6 +392,7 @@ This project is licensed under the GPL-2.0 License - see WordPress.org for detai
 **Mohd Akram**
 - Email: [info@iamakram.com](mailto:info@iamakram.com)
 - GitHub: [@iamakram22](https://github.com/iamakram22)
+- WordPress Org: [@iamakram](https://profiles.wordpress.org/iamakram/)
 
 
 ## 🙏 Credits
@@ -400,7 +406,7 @@ This project is licensed under the GPL-2.0 License - see WordPress.org for detai
 For support, please:
 
 1. Check the [Troubleshooting](#-troubleshooting) section
-2. Search existing [GitHub Issues](https://github.com/iamakram22/custom-donations-for-stripe/issues)
+2. Search existing [GitHub Issues](https://github.com/iamakram22/flexible-donations-for-stripe/issues)
 3. Open a new issue with detailed information
 
 ## 🔗 Links
