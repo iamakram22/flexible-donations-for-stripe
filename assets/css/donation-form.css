@@ -1,75 +1,75 @@
 :root {
-    --scd-accent: #0073aa;
-    --scd-accent-hover: #005177;
-    --scd-border: #ddd;
-    --scd-error: #f44336;
+    --fdfs-accent: #0073aa;
+    --fdfs-accent-hover: #005177;
+    --fdfs-border: #ddd;
+    --fdfs-error: #f44336;
 }
 
-.scd-donation-form {
+.fdfs-donation-form {
     max-width: 600px;
     padding: 30px;
     background: #f9f9f9;
     border-radius: 8px;
 }
 
-.scd-amount-buttons {
+.fdfs-amount-buttons {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
     margin-bottom: 20px;
 }
 
-.scd-amount-btn {
+.fdfs-amount-btn {
     padding: 15px;
     background: #fff;
-    border: 2px solid var(--scd-border);
+    border: 2px solid var(--fdfs-border);
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s;
 }
 
-.scd-amount-btn:hover,
-.scd-amount-btn.active {
-    background: var(--scd-accent);
+.fdfs-amount-btn:hover,
+.fdfs-amount-btn.active {
+    background: var(--fdfs-accent);
     color: #fff;
-    border-color: var(--scd-accent);
+    border-color: var(--fdfs-accent);
 }
 
-.scd-custom-amount,
-.scd-email,
-.scd-payment-type,
-.scd-interval {
+.fdfs-custom-amount,
+.fdfs-email,
+.fdfs-payment-type,
+.fdfs-interval {
     margin-bottom: 20px;
 }
 
-.scd-custom-amount label,
-.scd-email label,
-.scd-interval label {
+.fdfs-custom-amount label,
+.fdfs-email label,
+.fdfs-interval label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-.scd-custom-amount input,
-.scd-email input,
-.scd-interval select {
+.fdfs-custom-amount input,
+.fdfs-email input,
+.fdfs-interval select {
     width: 100%;
     padding: 10px;
-    border: 1px solid var(--scd-border);
+    border: 1px solid var(--fdfs-border);
     border-radius: 5px;
     font-size: 16px;
 }
 
-.scd-payment-type label {
+.fdfs-payment-type label {
     display: block;
     margin-bottom: 10px;
 }
 
-.scd-submit-btn {
+.fdfs-submit-btn {
     width: 100%;
     padding: 15px;
-    background: var(--scd-accent);
+    background: var(--fdfs-accent);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -79,16 +79,16 @@
     transition: background 0.3s;
 }
 
-.scd-submit-btn:hover {
-    background: var(--scd-accent-hover);
+.fdfs-submit-btn:hover {
+    background: var(--fdfs-accent-hover);
 }
 
-.scd-submit-btn:disabled {
+.fdfs-submit-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
 }
 
-.scd-success-message {
+.fdfs-success-message {
     padding: 15px;
     background: #4caf50;
     color: #fff;
@@ -96,9 +96,9 @@
     margin-bottom: 15px;
 }
 
-.scd-error-message {
+.fdfs-error-message {
     padding: 15px;
-    background: var(--scd-error);
+    background: var(--fdfs-error);
     color: #fff;
     border-radius: 5px;
     margin-top: 15px;

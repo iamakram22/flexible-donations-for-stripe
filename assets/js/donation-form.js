@@ -1,33 +1,33 @@
 jQuery(document).ready(function ($) {
     // Handle predefined amount buttons
-    $('.scd-amount-btn').on('click', function () {
-        $('.scd-amount-btn').removeClass('active');
+    $('.fdfs-amount-btn').on('click', function () {
+        $('.fdfs-amount-btn').removeClass('active');
         $(this).addClass('active');
-        $('#scd-custom-amount').val($(this).data('amount'));
+        $('#fdfs-custom-amount').val($(this).data('amount'));
     });
 
     // Handle custom amount input
-    $('#scd-custom-amount').on('input', function () {
-        $('.scd-amount-btn').removeClass('active');
+    $('#fdfs-custom-amount').on('input', function () {
+        $('.fdfs-amount-btn').removeClass('active');
     });
 
     // Show/hide interval selector
     $('input[name="payment_type"]').on('change', function () {
         if ($(this).val() === 'recurring') {
-            $('.scd-interval').slideDown();
+            $('.fdfs-interval').slideDown();
         } else {
-            $('.scd-interval').slideUp();
+            $('.fdfs-interval').slideUp();
         }
     });
 
     // Handle form submission [web:44]
-    $('#scd-donation-form').on('submit', function (e) {
+    $('#fdfs-donation-form').on('submit', function (e) {
         e.preventDefault();
 
-        var amount = $('#scd-custom-amount').val();
-        var email = $('#scd-email').val();
+        var amount = $('#fdfs-custom-amount').val();
+        var email = $('#fdfs-email').val();
         var paymentType = $('input[name="payment_type"]:checked').val();
-        var interval = $('#scd-interval').val();
+        var interval = $('#fdfs-interval').val();
 
         if (!amount || amount < 1) {
             showError('Please enter a valid amount (minimum 1)');
@@ -40,18 +40,18 @@ jQuery(document).ready(function ($) {
         }
 
         // Disable submit button
-        var $btn = $('.scd-submit-btn');
+        var $btn = $('.fdfs-submit-btn');
         $btn.prop('disabled', true).text('Processing...');
 
         // Make AJAX request
-        var requestUrl = scdAjax.method === 'rest' ? scdAjax.rest_url : scdAjax.ajax_url;
+        var requestUrl = fdfsAjax.method === 'rest' ? fdfsAjax.rest_url : fdfsAjax.ajax_url;
 
         $.ajax({
             url: requestUrl,
             type: 'POST',
             data: {
-                action: 'scd_create_checkout_session',
-                nonce: scdAjax.nonce,
+                action: 'fdfs_create_checkout_session',
+                nonce: fdfsAjax.nonce,
                 amount: amount,
                 email: email,
                 payment_type: paymentType,
@@ -74,9 +74,9 @@ jQuery(document).ready(function ($) {
     });
 
     function showError(message) {
-        $('.scd-error-message').text(message).slideDown();
+        $('.fdfs-error-message').text(message).slideDown();
         setTimeout(function () {
-            $('.scd-error-message').slideUp();
+            $('.fdfs-error-message').slideUp();
         }, 5000);
     }
 });

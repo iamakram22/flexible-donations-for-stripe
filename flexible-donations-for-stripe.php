@@ -1,18 +1,18 @@
 <?php
 /**
- * Plugin Name: Custom Donations for Stripe
- * Plugin URI: https://github.com/iamakram22/custom-donations-for-stripe
+ * Plugin Name: Flexible Donations for Stripe
+ * Plugin URI: https://github.com/iamakram22/flexible-donations-for-stripe
  * Description: Accept one-time and recurring donations via Stripe Checkout with custom amounts, sandbox testing, and webhook-based confirmation.
- * Version: 3.2.0
+ * Version: 3.3.0
  * Author: Mohd Akram
  * Author URI: https://github.com/iamakram22
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: custom-donations-for-stripe
+ * Text Domain: flexible-donations-for-stripe
  * Requires at least: 6.0
  * Requires PHP: 7.4
  *
- * @package Custom_Donations_For_Stripe
+ * @package Flexible_Donations_For_Stripe
  */
 
 // Copyright (c) 2026 Mohd Akram.
@@ -27,36 +27,36 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SCD_VERSION', '3.2.0');
-define('SCD_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('SCD_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('FDFS_VERSION', '3.3.0');
+define('FDFS_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('FDFS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Load Composer autoloader (Stripe SDK)
-require_once SCD_PLUGIN_DIR . 'vendor/autoload.php';
+require_once FDFS_PLUGIN_DIR . 'vendor/autoload.php';
 
 // Include required files
-require_once SCD_PLUGIN_DIR . 'includes/class-settings.php';
-require_once SCD_PLUGIN_DIR . 'includes/class-donation-handler.php';
-require_once SCD_PLUGIN_DIR . 'includes/class-webhook-handler.php';
+require_once FDFS_PLUGIN_DIR . 'includes/class-settings.php';
+require_once FDFS_PLUGIN_DIR . 'includes/class-donation-handler.php';
+require_once FDFS_PLUGIN_DIR . 'includes/class-webhook-handler.php';
 
 // Initialize plugin
-function scd_init_plugin()
+function fdfs_init_plugin()
 {
     // Initialize settings page
-    new SCD_Settings();
+    new FDFS_Settings();
 
     // Initialize donation handler
-    new SCD_Donation_Handler();
+    new FDFS_Donation_Handler();
 
     // Initialize webhook handler
-    new SCD_Webhook_Handler();
+    new FDFS_Webhook_Handler();
 }
-add_action('plugins_loaded', 'scd_init_plugin');
+add_action('plugins_loaded', 'fdfs_init_plugin');
 
 // Resolve active Stripe keys based on mode (live/test)
-function scd_get_active_keys()
+function fdfs_get_active_keys()
 {
-    $options = get_option('scd_stripe_settings');
+    $options = get_option('fdfs_stripe_settings');
     $mode = isset($options['stripe_mode']) ? $options['stripe_mode'] : 'live';
     $test = ($mode === 'test');
 
@@ -71,12 +71,12 @@ function scd_get_active_keys()
 }
 
 // Register activation hook
-register_activation_hook(__FILE__, 'scd_activate_plugin');
-function scd_activate_plugin()
+register_activation_hook(__FILE__, 'fdfs_activate_plugin');
+function fdfs_activate_plugin()
 {
     // Create donations table
     global $wpdb;
-    $table_name = $wpdb->prefix . 'stripe_donations';
+    $table_name = $wpdb->prefix . 'fdfs_donations';
     $charset_collate = $wpdb->get_charset_collate();
 
     $sql = "CREATE TABLE IF NOT EXISTS $table_name (
@@ -99,21 +99,21 @@ function scd_activate_plugin()
 }
 
 // Enqueue frontend assets
-add_action('wp_enqueue_scripts', 'scd_enqueue_assets');
-function scd_enqueue_assets()
+add_action('wp_enqueue_scripts', 'fdfs_enqueue_assets');
+function fdfs_enqueue_assets()
 {
-    wp_enqueue_style('scd-donation-form', SCD_PLUGIN_URL . 'assets/css/donation-form.css', array(), SCD_VERSION);
+    wp_enqueue_style('fdfs-donation-form', FDFS_PLUGIN_URL . 'assets/css/donation-form.css', array(), FDFS_VERSION);
 
-    wp_enqueue_script('scd-donation-form', SCD_PLUGIN_URL . 'assets/js/donation-form.js', array('jquery'), SCD_VERSION, true);
+    wp_enqueue_script('fdfs-donation-form', FDFS_PLUGIN_URL . 'assets/js/donation-form.js', array('jquery'), FDFS_VERSION, true);
 
     // Localize script with AJAX URL and nonce
-    $options = get_option('scd_stripe_settings');
+    $options = get_option('fdfs_stripe_settings');
     $method = isset($options['submission_method']) ? $options['submission_method'] : 'ajax';
 
-    wp_localize_script('scd-donation-form', 'scdAjax', array(
+    wp_localize_script('fdfs-donation-form', 'fdfsAjax', array(
         'ajax_url'   => admin_url('admin-ajax.php'),
-        'rest_url'   => get_rest_url(null, 'scd/v1/create-checkout-session'),
-        'nonce'      => wp_create_nonce('scd_donation_nonce'),
+        'rest_url'   => get_rest_url(null, 'fdfs/v1/create-checkout-session'),
+        'nonce'      => wp_create_nonce('fdfs_donation_nonce'),
         'method'     => $method,
     ));
 }
