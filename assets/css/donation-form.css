@@ -39,13 +39,15 @@
 .fdfs-custom-amount,
 .fdfs-email,
 .fdfs-payment-type,
-.fdfs-interval {
+.fdfs-interval,
+.fdfs-note {
     margin-bottom: 20px;
 }
 
 .fdfs-custom-amount label,
 .fdfs-email label,
-.fdfs-interval label {
+.fdfs-interval label,
+.fdfs-note label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
@@ -53,12 +55,17 @@
 
 .fdfs-custom-amount input,
 .fdfs-email input,
-.fdfs-interval select {
+.fdfs-interval select,
+.fdfs-note textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--fdfs-border);
     border-radius: 5px;
     font-size: 16px;
+}
+
+.fdfs-note textarea {
+    resize: vertical;
 }
 
 .fdfs-payment-type label {

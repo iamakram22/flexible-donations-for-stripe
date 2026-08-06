@@ -70,6 +70,7 @@ class FDFS_Donation_Handler
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';
         $intervals = isset($options['recurring_intervals']) ? $options['recurring_intervals'] : array('daily', 'weekly', 'monthly', 'quarterly', 'yearly');
         $button_label = isset($options['button_label']) ? $options['button_label'] : __('Proceed to Payment', 'flexible-donations-for-stripe');
+        $enable_note = isset($options['enable_note_field']) ? (int) $options['enable_note_field'] : 1;
 
         // Read query params
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only redirect params
@@ -129,6 +130,14 @@ class FDFS_Donation_Handler
                     <input type="email" id="fdfs-email" name="email" required>
                 </div>
 
+                <?php if ($enable_note) : ?>
+                    <!-- Note -->
+                    <div class="fdfs-note">
+                        <label for="fdfs-note"><?php esc_html_e('Note (optional):', 'flexible-donations-for-stripe'); ?></label>
+                        <textarea id="fdfs-note" name="note" rows="3" maxlength="500" placeholder="<?php esc_attr_e('Add a note with your donation', 'flexible-donations-for-stripe'); ?>"></textarea>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Payment Type -->
                 <div class="fdfs-payment-type">
                     <label>
@@ -185,6 +194,8 @@ class FDFS_Donation_Handler
         $email = isset($_POST['email']) ? sanitize_email(wp_unslash($_POST['email'])) : '';
         $payment_type = isset($_POST['payment_type']) ? sanitize_text_field(wp_unslash($_POST['payment_type'])) : 'one_time';
         $interval = isset($_POST['interval']) ? sanitize_text_field(wp_unslash($_POST['interval'])) : 'monnthly';
+        $note = isset($_POST['note']) ? sanitize_textarea_field(wp_unslash($_POST['note'])) : '';
+        $note = substr($note, 0, 500);
 
         // Validate
         if ($amount < 10) {
@@ -287,6 +298,7 @@ class FDFS_Donation_Handler
                 'metadata' => array(
                     'payment_type' => $payment_type,
                     'interval' => $interval,
+                    'note' => $note,
                     'business_name' => $org_name,
                     'website' => home_url($donation_page),
                 ),
@@ -297,6 +309,9 @@ class FDFS_Donation_Handler
                 $session_params['payment_intent_data'] = array(
                     'description' => 'Donation',
                     'statement_descriptor' => $statement_descriptor,
+                    'metadata' => array(
+                        'note' => $note,
+                    ),
                 );
             }
 
@@ -305,6 +320,7 @@ class FDFS_Donation_Handler
                 $session_params['subscription_data'] = array(
                     'description' => 'Donation',
                     'metadata' => array(
+                        'note' => $note,
                         'business_name' => $org_name,
                     ),
                 );
@@ -325,9 +341,10 @@ class FDFS_Donation_Handler
                     'currency' => $currency,
                     'payment_type' => $payment_type,
                     'billing_interval' => $interval,
+                    'donor_note' => $note,
                     'status' => 'pending',
                 ),
-                array('%s', '%s', '%f', '%s', '%s', '%s', '%s')
+                array('%s', '%s', '%f', '%s', '%s', '%s', '%s', '%s')
             );
 
             wp_send_json_success(array(
@@ -347,6 +364,7 @@ class FDFS_Donation_Handler
         $email = sanitize_email($request->get_param('email'));
         $payment_type = sanitize_text_field($request->get_param('payment_type'));
         $interval = sanitize_text_field($request->get_param('interval'));
+        $note = substr(sanitize_textarea_field($request->get_param('note')), 0, 500);
 
         if ($amount < 10) {
             return new WP_REST_Response(array('success' => false, 'data' => array('message' => __('Minimum donation amount is 10', 'flexible-donations-for-stripe'))), 400);
@@ -434,6 +452,7 @@ class FDFS_Donation_Handler
                 'metadata' => array(
                     'payment_type' => $payment_type,
                     'interval' => $interval,
+                    'note' => $note,
                     'business_name' => $org_name,
                     'website' => home_url($donation_page),
                 ),
@@ -443,6 +462,9 @@ class FDFS_Donation_Handler
                 $session_params['payment_intent_data'] = array(
                     'description' => 'Donation',
                     'statement_descriptor' => $statement_descriptor,
+                    'metadata' => array(
+                        'note' => $note,
+                    ),
                 );
             }
 
@@ -450,6 +472,7 @@ class FDFS_Donation_Handler
                 $session_params['subscription_data'] = array(
                     'description' => 'Donation',
                     'metadata' => array(
+                        'note' => $note,
                         'business_name' => $org_name,
                     ),
                 );
@@ -468,9 +491,10 @@ class FDFS_Donation_Handler
                     'currency' => $currency,
                     'payment_type' => $payment_type,
                     'billing_interval' => $interval,
+                    'donor_note' => $note,
                     'status' => 'pending',
                 ),
-                array('%s', '%s', '%f', '%s', '%s', '%s', '%s')
+                array('%s', '%s', '%f', '%s', '%s', '%s', '%s', '%s')
             );
 
             return new WP_REST_Response(array(

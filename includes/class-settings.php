@@ -158,6 +158,14 @@ class FDFS_Settings
         );
 
         add_settings_field(
+            'enable_note_field',
+            __('Donation Note Field', 'flexible-donations-for-stripe'),
+            array($this, 'enable_note_field_callback'),
+            'fdfs-settings',
+            'fdfs_donation_section'
+        );
+
+        add_settings_field(
             'submission_method',
             __('Submission Method', 'flexible-donations-for-stripe'),
             array($this, 'submission_method_callback'),
@@ -278,6 +286,8 @@ class FDFS_Settings
         if (isset($input['button_label'])) {
             $sanitized['button_label'] = sanitize_text_field($input['button_label']);
         }
+
+        $sanitized['enable_note_field'] = !empty($input['enable_note_field']) ? 1 : 0;
 
         if (isset($input['submission_method'])) {
             $sanitized['submission_method'] = in_array($input['submission_method'], array('ajax', 'rest')) ? $input['submission_method'] : 'ajax';
@@ -481,6 +491,18 @@ class FDFS_Settings
         $value = isset($options['button_label']) ? $options['button_label'] : 'Donate';
         echo '<input type="text" name="' . esc_attr($this->option_name) . '[button_label]" value="' . esc_attr($value) . '" class="regular-text" />';
         echo '<p class="description">' . esc_html__('It will be text of the button', 'flexible-donations-for-stripe') . '</p>';
+    }
+
+    public function enable_note_field_callback()
+    {
+        $options = get_option($this->option_name);
+        $enabled = isset($options['enable_note_field']) ? (int) $options['enable_note_field'] : 1;
+        ?>
+        <label>
+            <input type="checkbox" name="<?php echo esc_attr($this->option_name); ?>[enable_note_field]" value="1" <?php checked($enabled, 1); ?>>
+            <?php esc_html_e('Show an optional note field on the donation form. The note is stored with the donation in Stripe and your database.', 'flexible-donations-for-stripe'); ?>
+        </label>
+        <?php
     }
 
     public function submission_method_callback()

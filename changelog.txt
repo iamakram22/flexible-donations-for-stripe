@@ -3,6 +3,7 @@
 * Upgraded Stripe PHP SDK to v21.1.1
 * Added automatic migration of legacy settings, donations table, shortcode, and webhook endpoint
 * Added cache-proof nonce refresh so donations work on pages served from cache
+* Added optional donation note field (configurable in settings) stored in Stripe metadata and the donations table
 
 = 1.0.0 =
 * Initial release
