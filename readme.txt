@@ -103,7 +103,7 @@ This plugin does not collect, store, or transmit any personal data on its own. D
 * Added optional donation note field (configurable in settings) stored in Stripe metadata and the donations table
 
 = 3.2.0 =
-* Renamed to Flexible Donations for Stripe and moved to the flexible-donations-for-stripe slug
+* Renamed to Custom Donations for Stripe
 * Fixed escaping and input sanitization issues flagged by the Plugin Check tool
 * Fixed direct database query warnings flagged by the Plugin Check tool
 
@@ -118,7 +118,24 @@ This plugin does not collect, store, or transmit any personal data on its own. D
 * Added REST API submission method to work around `admin-ajax.php` 403 errors for non-logged-in users
 * Added email template support with dynamic placeholders
 
+= 2.0.0 =
+* Added email template support with dynamic placeholders
+
+= 1.0.0 =
+* Initial release
+* One-time and recurring donation support
+* Custom amount input
+* Predefined amount buttons
+* Multi-interval recurring options (daily, weekly, monthly, quarterly, yearly)
+* Stripe webhook integration
+* Email confirmations
+* Database donation tracking
+* Admin settings page with secure key storage
+
 == Upgrade Notice ==
+
+= 3.3.0 =
+Upgrading from an earlier version? Settings, donation records, shortcode, and webhook endpoint are migrated automatically. After upgrading, update your Stripe Dashboard webhook URL to `/wp-json/fdfs/v1/webhook`.
 
 = 3.1.0 =
 New installs default to AJAX submission. If your host blocks `admin-ajax.php` for visitors, switch **Submission Method** to REST API in settings.

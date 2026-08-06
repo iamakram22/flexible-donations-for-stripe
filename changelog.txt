@@ -1,9 +1,29 @@
 = 3.3.0 =
 * Rebranded as Flexible Donations for Stripe with the flexible-donations-for-stripe slug
 * Upgraded Stripe PHP SDK to v21.1.1
+* Fixed settings page slug to use the plugin prefix instead of a generic word
 * Added automatic migration of legacy settings, donations table, shortcode, and webhook endpoint
 * Added cache-proof nonce refresh so donations work on pages served from cache
 * Added optional donation note field (configurable in settings) stored in Stripe metadata and the donations table
+
+= 3.2.0 =
+* Renamed to Custom Donations for Stripe
+* Fixed escaping and input sanitization issues flagged by the Plugin Check tool
+* Fixed direct database query warnings flagged by the Plugin Check tool
+
+= 3.1.0 =
+* Added Sandbox / Test mode with separate test keys and a live/test toggle
+* Added warning banner when test mode is active
+* Added donation page path setting for Stripe redirect URLs
+* Added configurable statement descriptor shown on donor bank statements
+* General cleanup for WordPress.org compliance
+
+= 3.0.0 =
+* Added REST API submission method to work around admin-ajax.php 403 errors for non-logged-in users
+* Added email template support with dynamic placeholders
+
+= 2.0.0 =
+* Added email template support with dynamic placeholders
 
 = 1.0.0 =
 * Initial release
