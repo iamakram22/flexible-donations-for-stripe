@@ -98,6 +98,8 @@ This plugin does not collect, store, or transmit any personal data on its own. D
 * Rebranded as Flexible Donations for Stripe with the flexible-donations-for-stripe slug
 * Upgraded Stripe PHP SDK to v21.1.1
 * Fixed settings page slug to use the plugin prefix instead of a generic word
+* Added automatic migration of legacy settings, donations table, shortcode, and webhook endpoint from the pre-3.3.0 version
+* Added cache-proof nonce refresh so donations work on pages served from cache
 
 = 3.2.0 =
 * Renamed to Flexible Donations for Stripe and moved to the flexible-donations-for-stripe slug

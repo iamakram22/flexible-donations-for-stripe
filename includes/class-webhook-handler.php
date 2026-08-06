@@ -25,6 +25,14 @@ class FDFS_Webhook_Handler
             'callback' => array($this, 'handle_webhook'),
             'permission_callback' => '__return_true', // Stripe signature verification handles security
         ));
+
+        // Legacy route alias (pre-3.3.0): keeps confirmations flowing until the
+        // webhook URL in the Stripe dashboard is updated to fdfs/v1/webhook.
+        register_rest_route('scd/v1', '/webhook', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'handle_webhook'),
+            'permission_callback' => '__return_true',
+        ));
     }
 
     /**
