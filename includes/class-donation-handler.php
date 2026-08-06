@@ -14,6 +14,9 @@ class FDFS_Donation_Handler
         // Register shortcode
         add_shortcode('fdfs_donation_form', array($this, 'render_donation_form'));
 
+        // Legacy shortcode alias (pre-3.3.0) so existing pages keep working after upgrade
+        add_shortcode('stripe_donation_form', array($this, 'render_donation_form'));
+
         // Register AJAX handlers (for both logged-in and non-logged-in users)
         add_action('wp_ajax_fdfs_create_checkout_session', array($this, 'create_checkout_session'));
         add_action('wp_ajax_nopriv_fdfs_create_checkout_session', array($this, 'create_checkout_session'));
@@ -29,6 +32,20 @@ class FDFS_Donation_Handler
             'callback' => array($this, 'create_checkout_session_rest'),
             'permission_callback' => array($this, 'check_rest_permission'),
         ));
+
+        // Fresh nonce for the donation form. Never cached, so submissions still work
+        // on pages served by page-cache/CDN with an expired embedded nonce.
+        register_rest_route('fdfs/v1', '/nonce', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_nonce'),
+            'permission_callback' => '__return_true',
+        ));
+    }
+
+    public function get_nonce()
+    {
+        nocache_headers();
+        return rest_ensure_response(array('nonce' => wp_create_nonce('fdfs_donation_nonce')));
     }
 
     public function check_rest_permission($request)
@@ -42,6 +59,12 @@ class FDFS_Donation_Handler
      */
     public function render_donation_form($atts)
     {
+        // Don't let page-cache plugins serve stale HTML (and stale nonces) for this page
+        if (!defined('DONOTCACHEPAGE')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- cache plugins check for this exact constant
+            define('DONOTCACHEPAGE', true);
+        }
+
         $options = get_option('fdfs_stripe_settings');
         $predefined_amounts = isset($options['predefined_amounts']) ? explode(',', $options['predefined_amounts']) : array('500', '1000', '2000', '5000');
         $currency = isset($options['currency']) ? $options['currency'] : 'inr';

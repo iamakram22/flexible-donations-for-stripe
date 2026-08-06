@@ -43,33 +43,41 @@ jQuery(document).ready(function ($) {
         var $btn = $('.fdfs-submit-btn');
         $btn.prop('disabled', true).text('Processing...');
 
-        // Make AJAX request
-        var requestUrl = fdfsAjax.method === 'rest' ? fdfsAjax.rest_url : fdfsAjax.ajax_url;
+        // Fetch a fresh nonce so cached pages (expired embedded nonce) still work;
+        // fall back to the localized nonce if the endpoint is unreachable.
+        var nonceRequest = $.get(fdfsAjax.nonce_url)
+            .then(function (response) { return response.nonce; })
+            .fail(function () { return fdfsAjax.nonce; });
 
-        $.ajax({
-            url: requestUrl,
-            type: 'POST',
-            data: {
-                action: 'fdfs_create_checkout_session',
-                nonce: fdfsAjax.nonce,
-                amount: amount,
-                email: email,
-                payment_type: paymentType,
-                interval: interval
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Redirect to Stripe Checkout
-                    window.location.href = response.data.url;
-                } else {
-                    showError(response.data.message);
+        nonceRequest.done(function (nonce) {
+            // Make AJAX request
+            var requestUrl = fdfsAjax.method === 'rest' ? fdfsAjax.rest_url : fdfsAjax.ajax_url;
+
+            $.ajax({
+                url: requestUrl,
+                type: 'POST',
+                data: {
+                    action: 'fdfs_create_checkout_session',
+                    nonce: nonce,
+                    amount: amount,
+                    email: email,
+                    payment_type: paymentType,
+                    interval: interval
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Redirect to Stripe Checkout
+                        window.location.href = response.data.url;
+                    } else {
+                        showError(response.data.message);
+                        $btn.prop('disabled', false).text('Proceed to Payment');
+                    }
+                },
+                error: function () {
+                    showError('An error occurred. Please try again.');
                     $btn.prop('disabled', false).text('Proceed to Payment');
                 }
-            },
-            error: function () {
-                showError('An error occurred. Please try again.');
-                $btn.prop('disabled', false).text('Proceed to Payment');
-            }
+            });
         });
     });
 

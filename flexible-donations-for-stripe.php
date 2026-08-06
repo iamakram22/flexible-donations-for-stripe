@@ -53,6 +53,46 @@ function fdfs_init_plugin()
 }
 add_action('plugins_loaded', 'fdfs_init_plugin');
 
+// Migrate legacy (pre-3.3.0 "stripe-donations" / scd_ era) data. Idempotent: runs on every load
+// so it also works when the plugin files are replaced manually (activation hook never fires).
+function fdfs_migrate_legacy()
+{
+    // 1. Settings: copy old option key if the new one is missing.
+    if (false === get_option('fdfs_stripe_settings')) {
+        $legacy_settings = get_option('scd_stripe_settings');
+        if (false !== $legacy_settings) {
+            update_option('fdfs_stripe_settings', $legacy_settings);
+        }
+    }
+
+    // 2. Donations table: rename (or copy) legacy rows into the new table.
+    global $wpdb;
+    // Table names are built from $wpdb->prefix, which is a config-supplied safe identifier.
+    $old_table = $wpdb->prefix . 'stripe_donations';
+    $new_table = $wpdb->prefix . 'fdfs_donations';
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-time migration
+    $old_exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $old_table));
+    if (!$old_exists) {
+        return;
+    }
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-time migration
+    $new_exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $new_table));
+    if (!$new_exists) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- one-time migration; DDL cannot use prepare()
+        $wpdb->query("RENAME TABLE {$old_table} TO {$new_table}");
+        return;
+    }
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- one-time migration; identifier from wpdb->prefix
+    $new_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$new_table}");
+    if (0 === $new_count) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- one-time migration; identifier from wpdb->prefix
+        $wpdb->query("INSERT INTO {$new_table} SELECT * FROM {$old_table}");
+    }
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.SchemaChange -- one-time migration; identifier from wpdb->prefix
+    $wpdb->query("DROP TABLE IF EXISTS {$old_table}");
+}
+add_action('plugins_loaded', 'fdfs_migrate_legacy', 5);
+
 // Resolve active Stripe keys based on mode (live/test)
 function fdfs_get_active_keys()
 {
@@ -113,6 +153,7 @@ function fdfs_enqueue_assets()
     wp_localize_script('fdfs-donation-form', 'fdfsAjax', array(
         'ajax_url'   => admin_url('admin-ajax.php'),
         'rest_url'   => get_rest_url(null, 'fdfs/v1/create-checkout-session'),
+        'nonce_url'  => get_rest_url(null, 'fdfs/v1/nonce'),
         'nonce'      => wp_create_nonce('fdfs_donation_nonce'),
         'method'     => $method,
     ));
