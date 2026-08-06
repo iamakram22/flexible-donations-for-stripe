@@ -57,6 +57,14 @@ add_action('plugins_loaded', 'fdfs_init_plugin');
 // so it also works when the plugin files are replaced manually (activation hook never fires).
 function fdfs_migrate_legacy()
 {
+    // 0. Keep the donations table schema in sync (adds new columns on upgrade
+    // without needing deactivate/reactivate).
+    if (get_option('fdfs_db_version') !== FDFS_VERSION) {
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta(fdfs_donations_table_sql());
+        update_option('fdfs_db_version', FDFS_VERSION);
+    }
+
     // 1. Settings: copy old option key if the new one is missing.
     if (false === get_option('fdfs_stripe_settings')) {
         $legacy_settings = get_option('scd_stripe_settings');
@@ -86,7 +94,7 @@ function fdfs_migrate_legacy()
     $new_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$new_table}");
     if (0 === $new_count) {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- one-time migration; identifier from wpdb->prefix
-        $wpdb->query("INSERT INTO {$new_table} SELECT * FROM {$old_table}");
+        $wpdb->query("INSERT INTO {$new_table} (id, stripe_session_id, stripe_subscription_id, customer_email, amount, currency, payment_type, billing_interval, status, created_at) SELECT id, stripe_session_id, stripe_subscription_id, customer_email, amount, currency, payment_type, billing_interval, status, created_at FROM {$old_table}");
     }
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.SchemaChange -- one-time migration; identifier from wpdb->prefix
     $wpdb->query("DROP TABLE IF EXISTS {$old_table}");
@@ -110,16 +118,14 @@ function fdfs_get_active_keys()
     );
 }
 
-// Register activation hook
-register_activation_hook(__FILE__, 'fdfs_activate_plugin');
-function fdfs_activate_plugin()
+// Donations table schema (shared by activation and the schema-sync check in fdfs_migrate_legacy)
+function fdfs_donations_table_sql()
 {
-    // Create donations table
     global $wpdb;
     $table_name = $wpdb->prefix . 'fdfs_donations';
     $charset_collate = $wpdb->get_charset_collate();
 
-    $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+    return "CREATE TABLE $table_name (
         id bigint(20) NOT NULL AUTO_INCREMENT,
         stripe_session_id varchar(255) NOT NULL,
         stripe_subscription_id varchar(255) DEFAULT NULL,
@@ -128,14 +134,21 @@ function fdfs_activate_plugin()
         currency varchar(10) DEFAULT 'inr',
         payment_type varchar(20) NOT NULL,
         billing_interval varchar(20) DEFAULT NULL,
+        donor_note text DEFAULT NULL,
         status varchar(50) NOT NULL,
         created_at datetime DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (id),
+        PRIMARY KEY  (id),
         KEY stripe_session_id (stripe_session_id)
     ) $charset_collate;";
+}
 
+// Register activation hook
+register_activation_hook(__FILE__, 'fdfs_activate_plugin');
+function fdfs_activate_plugin()
+{
+    // Create donations table
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
+    dbDelta(fdfs_donations_table_sql());
 }
 
 // Enqueue frontend assets

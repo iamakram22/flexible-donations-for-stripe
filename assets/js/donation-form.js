@@ -28,6 +28,7 @@ jQuery(document).ready(function ($) {
         var email = $('#fdfs-email').val();
         var paymentType = $('input[name="payment_type"]:checked').val();
         var interval = $('#fdfs-interval').val();
+        var note = $('#fdfs-note').length ? $('#fdfs-note').val() : '';
 
         if (!amount || amount < 1) {
             showError('Please enter a valid amount (minimum 1)');
@@ -62,7 +63,8 @@ jQuery(document).ready(function ($) {
                     amount: amount,
                     email: email,
                     payment_type: paymentType,
-                    interval: interval
+                    interval: interval,
+                    note: note
                 },
                 success: function (response) {
                     if (response.success) {

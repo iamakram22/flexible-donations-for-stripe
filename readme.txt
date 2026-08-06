@@ -100,6 +100,7 @@ This plugin does not collect, store, or transmit any personal data on its own. D
 * Fixed settings page slug to use the plugin prefix instead of a generic word
 * Added automatic migration of legacy settings, donations table, shortcode, and webhook endpoint from the pre-3.3.0 version
 * Added cache-proof nonce refresh so donations work on pages served from cache
+* Added optional donation note field (configurable in settings) stored in Stripe metadata and the donations table
 
 = 3.2.0 =
 * Renamed to Flexible Donations for Stripe and moved to the flexible-donations-for-stripe slug
