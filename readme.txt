@@ -43,7 +43,7 @@ Your live keys are stored separately and are never touched when you switch modes
 
 1. Upload the `flexible-donations-for-stripe` folder to `/wp-content/plugins/`
 2. Activate the plugin through the **Plugins** menu in WordPress
-3. Go to **Settings → Stripe Donations** and enter your Stripe Secret Key, Publishable Key, and Webhook Secret (from [Stripe Dashboard → Developers](https://dashboard.stripe.com/developers))
+3. Go to **Settings → Stripe Integration** and enter your Stripe Secret Key, Publishable Key, and Webhook Secret (from [Stripe Dashboard → Developers](https://dashboard.stripe.com/developers))
 4. Add the `[fdfs_donation_form]` shortcode to any page
 
 = Webhook setup =
@@ -77,7 +77,7 @@ Stripe Checkout works on HTTP, but a valid SSL certificate is strongly recommend
 
 = How do I change where donors return after payment? =
 
-Set the **Donation Page Path** in Settings → Stripe Donations. This is the path of the page containing the donation form (default: `/support-us`).
+Set the **Donation Page Path** in Settings → Stripe Integration. This is the path of the page containing the donation form (default: `/support-us`).
 
 = Which payment methods are supported? =
 

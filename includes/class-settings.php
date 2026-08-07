@@ -25,8 +25,8 @@ class FDFS_Settings
     public function add_settings_page()
     {
         add_options_page(
-            __('Stripe Donations Settings', 'flexible-donations-for-stripe'),
-            __('Stripe Donations', 'flexible-donations-for-stripe'),
+            __('Stripe Integration Settings', 'flexible-donations-for-stripe'),
+            __('Stripe Integration', 'flexible-donations-for-stripe'),
             'manage_options',
             'fdfs-settings',
             array($this, 'render_settings_page')
