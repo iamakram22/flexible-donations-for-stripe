@@ -3,7 +3,7 @@
  * Plugin Name: Flexible Donations for Stripe
  * Plugin URI: https://github.com/iamakram22/flexible-donations-for-stripe
  * Description: Accept one-time and recurring donations via Stripe Checkout with custom amounts, sandbox testing, and webhook-based confirmation.
- * Version: 3.3.0
+ * Version: 3.3.1
  * Author: Mohd Akram
  * Author URI: https://github.com/iamakram22
  * License: GPL-2.0-or-later
