@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "stripe/stripe-php",
-            "version": "v21.1.1",
+            "version": "v21.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "5f68d5a285d206a757ebbd9bf0e037759a61c379"
+                "reference": "12986995cd5e229cc094d4b57de056f8e2e6e5a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/5f68d5a285d206a757ebbd9bf0e037759a61c379",
-                "reference": "5f68d5a285d206a757ebbd9bf0e037759a61c379",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/12986995cd5e229cc094d4b57de056f8e2e6e5a9",
+                "reference": "12986995cd5e229cc094d4b57de056f8e2e6e5a9",
                 "shasum": ""
             },
             "require": {
@@ -64,9 +64,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v21.1.1"
+                "source": "https://github.com/stripe/stripe-php/tree/v21.3.1"
             },
-            "time": "2026-07-30T18:43:28+00:00"
+            "time": "2026-09-01T18:42:58+00:00"
         }
     ],
     "packages-dev": [],

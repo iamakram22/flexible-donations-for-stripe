@@ -2,7 +2,7 @@
 
 A powerful, lightweight WordPress plugin for accepting one-time and recurring donations via Stripe with custom amount support.
 
-![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.3.1-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-6.0%2B-green.svg)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-red.svg)
@@ -335,6 +335,13 @@ Check logs at: `wp-content/debug.log`
 7. **Sanitize all user inputs** (already implemented)
 
 ## 📝 Changelog
+
+### Version 3.3.1 (September 2026)
+- Added comprehensive webhook configuration instructions directly in the settings page
+- Fixed currency symbol display — now shows correct symbol (€, £, ₹, etc.) based on Currency setting
+- Added currency symbol helper (`FDFS_Helpers::get_currency_symbol()`) with 90+ ISO currency mappings
+- Updated documentation with detailed webhook setup and currency configuration sections
+- Changed settings menu name from "Stripe Integration" to "Flexible Donations"
 
 ### Version 3.3.0 (August 2026)
 - Rebranded as **Flexible Donations for Stripe** (slug `flexible-donations-for-stripe`)

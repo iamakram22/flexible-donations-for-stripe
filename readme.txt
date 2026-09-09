@@ -3,7 +3,7 @@ Contributors: iamakram
 Tags: donations, donation form, recurring donations, payment gateway, webhook
 Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,11 +51,15 @@ Your live keys are stored separately and are never touched when you switch modes
 1. In Stripe Dashboard, go to **Developers → Webhooks** and click **Add endpoint**
 2. Enter your webhook URL: `https://yoursite.com/wp-json/fdfs/v1/webhook`
 3. Subscribe to these events:
-    * `checkout.session.completed`
-    * `invoice.payment_succeeded`
-    * `customer.subscription.deleted`
-4. Copy the signing secret (`whsec_...`) and paste it in the plugin settings
-5. If using test mode, create a second webhook endpoint in Stripe's test mode and paste its secret in the test webhook field
+    * `checkout.session.completed` - Confirms one-time donations and starts recurring subscriptions
+    * `invoice.payment_succeeded` - Confirms recurring payment renewals (monthly, yearly, etc.)
+    * `customer.subscription.deleted` - Marks subscription as cancelled when donor cancels
+4. Copy the signing secret (`whsec_...`) and paste it in the plugin settings (**Webhook Secret** field)
+5. If using test mode, create a second webhook endpoint in Stripe's test mode (toggle at top of Dashboard) and paste its secret in the **Test Webhook Secret** field
+
+= Currency Configuration =
+
+The plugin supports any Stripe-supported currency. Set the **Currency** field in Settings → Stripe Integration to a 3-letter ISO code (e.g., `usd`, `eur`, `gbp`, `inr`, `cad`, `aud`, `jpy`). The correct currency symbol will be displayed on the donation form and in confirmation emails automatically.
 
 = Composer note =
 
@@ -83,6 +87,10 @@ Set the **Donation Page Path** in Settings → Stripe Integration. This is the p
 
 Cards through Stripe Checkout. Stripe handles the full payment experience.
 
+= Why does my currency still show $ after changing it? =
+
+Version 3.3.0+ automatically displays the correct currency symbol (€, £, ₹, etc.) based on the Currency setting. If you're on an older version, update the plugin. The Currency field accepts any 3-letter ISO code (e.g., `eur`, `gbp`, `inr`, `cad`, `aud`, `jpy`).
+
 == Screenshots ==
 
 1. Donation form with predefined amount buttons, custom amount input, and one-time / recurring options
@@ -93,6 +101,13 @@ Cards through Stripe Checkout. Stripe handles the full payment experience.
 This plugin does not collect, store, or transmit any personal data on its own. Donation information (donor email address and amount) is sent to Stripe, the payment processor, when creating a checkout session. Data is stored in your site's database (`fdfs_donations` table) for donation tracking purposes.
 
 == Changelog ==
+
+= 3.3.1 =
+* Added comprehensive webhook configuration instructions in settings page
+* Fixed currency symbol display (now shows correct symbol €, £, ₹, etc. based on Currency setting)
+* Added currency symbol helper with 90+ ISO currency mappings
+* Updated readme with detailed webhook setup and currency configuration sections
+* Changed settings menu name from "Stripe Integration" to "Flexible Donations"
 
 = 3.3.0 =
 * Rebranded as Flexible Donations for Stripe with the flexible-donations-for-stripe slug

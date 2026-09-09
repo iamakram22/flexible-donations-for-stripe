@@ -1,3 +1,10 @@
+= 3.3.1 =
+* Added comprehensive webhook configuration instructions in settings page
+* Fixed currency symbol display (now shows correct symbol €, £, ₹, etc. based on Currency setting)
+* Added currency symbol helper with 90+ ISO currency mappings
+* Updated readme with detailed webhook setup and currency configuration sections
+* Changed settings menu name from "Stripe Integration" to "Flexible Donations"
+
 = 3.3.0 =
 * Rebranded as Flexible Donations for Stripe with the flexible-donations-for-stripe slug
 * Upgraded Stripe PHP SDK to v21.1.1

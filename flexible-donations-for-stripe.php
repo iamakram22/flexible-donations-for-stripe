@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('FDFS_VERSION', '3.3.0');
+define('FDFS_VERSION', '3.3.1');
 define('FDFS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FDFS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -38,6 +38,7 @@ require_once FDFS_PLUGIN_DIR . 'vendor/autoload.php';
 require_once FDFS_PLUGIN_DIR . 'includes/class-settings.php';
 require_once FDFS_PLUGIN_DIR . 'includes/class-donation-handler.php';
 require_once FDFS_PLUGIN_DIR . 'includes/class-webhook-handler.php';
+require_once FDFS_PLUGIN_DIR . 'includes/class-helpers.php';
 
 // Initialize plugin
 function fdfs_init_plugin()

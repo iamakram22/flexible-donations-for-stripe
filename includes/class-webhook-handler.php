@@ -163,7 +163,7 @@ class FDFS_Webhook_Handler
             }
 
             // Prepare dynamic data
-            $amount_formatted = '$' . number_format($session->amount_total / 100, 2);
+            $amount_formatted = fdfs_get_currency_symbol($session->currency) . number_format($session->amount_total / 100, 2);
             $customer_email = $session->customer_email;
             $payment_type = isset($session->metadata->payment_type) ? ucfirst($session->metadata->payment_type) : 'One-time';
             $interval = isset($session->metadata->interval) ? ucfirst($session->metadata->interval) : 'N/A';

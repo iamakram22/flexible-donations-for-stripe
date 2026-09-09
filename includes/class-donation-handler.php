@@ -112,7 +112,7 @@ class FDFS_Donation_Handler
                 <div class="fdfs-amount-buttons">
                     <?php foreach ($predefined_amounts as $amount) : ?>
                         <button type="button" class="fdfs-amount-btn" data-amount="<?php echo esc_attr(trim($amount)); ?>">
-                            <?php echo esc_html('$' . number_format(trim($amount))); ?>
+                            <?php echo esc_html(fdfs_get_currency_symbol($currency) . number_format(trim($amount))); ?>
                         </button>
                     <?php endforeach; ?>
                 </div>

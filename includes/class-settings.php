@@ -25,8 +25,8 @@ class FDFS_Settings
     public function add_settings_page()
     {
         add_options_page(
-            __('Stripe Integration Settings', 'flexible-donations-for-stripe'),
-            __('Stripe Integration', 'flexible-donations-for-stripe'),
+            __('Flexible Donations Settings', 'flexible-donations-for-stripe'),
+            __('Flexible Donations', 'flexible-donations-for-stripe'),
             'manage_options',
             'fdfs-settings',
             array($this, 'render_settings_page')
@@ -359,12 +359,34 @@ class FDFS_Settings
             </form>
 
             <hr>
+            <h2><?php esc_html_e('Webhook Configuration', 'flexible-donations-for-stripe'); ?></h2>
+            <p><strong><?php esc_html_e('Webhook URL:', 'flexible-donations-for-stripe'); ?></strong>
+                <code><?php echo esc_url(home_url('/wp-json/fdfs/v1/webhook')); ?></code></p>
+
+            <p><?php echo wp_kses_post(__('In your Stripe Dashboard, go to <strong>Developers &rarr; Webhooks</strong> and click <strong>Add endpoint</strong>.', 'flexible-donations-for-stripe')); ?>
+            </p>
+
+            <p><?php esc_html_e('Required events to subscribe:', 'flexible-donations-for-stripe'); ?></p>
+            <ul style="list-style: disc; margin-left: 20px;">
+                <li><code>checkout.session.completed</code> -
+                    <?php esc_html_e('Confirms one-time donations and starts recurring subscriptions', 'flexible-donations-for-stripe'); ?>
+                </li>
+                <li><code>invoice.payment_succeeded</code> -
+                    <?php esc_html_e('Confirms recurring payment renewals', 'flexible-donations-for-stripe'); ?></li>
+                <li><code>customer.subscription.deleted</code> -
+                    <?php esc_html_e('Marks subscription as cancelled when donor cancels', 'flexible-donations-for-stripe'); ?>
+                </li>
+            </ul>
+
+            <p><?php echo wp_kses_post(__('After adding the endpoint, copy the <strong>Signing Secret</strong> (starts with <code>whsec_</code>) and paste it in the <strong>Webhook Secret</strong> field in the Stripe API Configuration section above.', 'flexible-donations-for-stripe')); ?>
+            </p>
+
+            <p><strong><?php esc_html_e('Test Mode:', 'flexible-donations-for-stripe'); ?></strong>
+                <?php echo wp_kses_post(__('If using Test mode, create a separate webhook endpoint in Stripe\'s test mode (toggle at top of Dashboard) and paste its signing secret in the <strong>Test Webhook Secret</strong> field in the Sandbox section.', 'flexible-donations-for-stripe')); ?>
+            </p>
+
             <h2><?php esc_html_e('Shortcode Usage', 'flexible-donations-for-stripe'); ?></h2>
             <p><code>[fdfs_donation_form]</code></p>
-
-            <h2><?php esc_html_e('Webhook URL', 'flexible-donations-for-stripe'); ?></h2>
-            <p><code><?php echo esc_url(home_url('/wp-json/fdfs/v1/webhook')); ?></code></p>
-            <p><?php esc_html_e('Add this URL to your Stripe Dashboard > Webhooks', 'flexible-donations-for-stripe'); ?></p>
         </div>
         <?php
     }
@@ -372,7 +394,10 @@ class FDFS_Settings
     // Section callbacks
     public function api_section_callback()
     {
-        echo '<p>' . esc_html__('Enter your Stripe API keys. Keys are stored securely in the database.', 'flexible-donations-for-stripe') . '</p>';
+        ?>
+        <p><?php esc_html_e('Enter your Stripe API keys. Keys are stored securely in the database.', 'flexible-donations-for-stripe'); ?>
+        </p>
+        <?php
     }
 
     public function donation_section_callback()
