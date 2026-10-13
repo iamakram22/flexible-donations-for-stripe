@@ -3,7 +3,7 @@ Contributors: iamakram
 Tags: donations, donation form, recurring donations, payment gateway, webhook
 Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,10 @@ Version 3.3.0+ automatically displays the correct currency symbol (€, £, ₹,
 This plugin does not collect, store, or transmit any personal data on its own. Donation information (donor email address and amount) is sent to Stripe, the payment processor, when creating a checkout session. Data is stored in your site's database (`fdfs_donations` table) for donation tracking purposes.
 
 == Changelog ==
+
+= 3.3.2 =
+* Fixed thank-you email not sending when Stripe omits customer_email — now falls back to customer_details.email and the stored donation record
+* Log skipped and failed confirmation emails to the PHP error log ([FDFS] prefix) for diagnosability
 
 = 3.3.1 =
 * Added comprehensive webhook configuration instructions in settings page

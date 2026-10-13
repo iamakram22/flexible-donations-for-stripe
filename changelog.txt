@@ -1,3 +1,7 @@
+= 3.3.2 =
+* Fixed thank-you email not sending when Stripe omits customer_email — now falls back to customer_details.email and the stored donation record
+* Log skipped and failed confirmation emails to the PHP error log ([FDFS] prefix) for diagnosability
+
 = 3.3.1 =
 * Added comprehensive webhook configuration instructions in settings page
 * Fixed currency symbol display (now shows correct symbol €, £, ₹, etc. based on Currency setting)

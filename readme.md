@@ -2,7 +2,7 @@
 
 A powerful, lightweight WordPress plugin for accepting one-time and recurring donations via Stripe with custom amount support.
 
-![Version](https://img.shields.io/badge/version-3.3.1-blue.svg)
+![Version](https://img.shields.io/badge/version-3.3.2-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-6.0%2B-green.svg)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-red.svg)
@@ -335,6 +335,10 @@ Check logs at: `wp-content/debug.log`
 7. **Sanitize all user inputs** (already implemented)
 
 ## 📝 Changelog
+
+### Version 3.3.2
+- Fixed thank-you email not sending when Stripe omits customer_email — falls back to customer_details.email and the stored donation record
+- Log skipped/failed confirmation emails to the PHP error log ([FDFS] prefix)
 
 ### Version 3.3.1 (September 2026)
 - Added comprehensive webhook configuration instructions directly in the settings page
